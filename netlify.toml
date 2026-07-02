@@ -1,0 +1,17 @@
+# Omega Digital — Netlify yapılandırması
+# Derleme adımı yok: site tamamen statik (index.html + app.js + styles.css)
+
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
