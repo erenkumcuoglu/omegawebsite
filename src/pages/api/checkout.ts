@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { DEFAULT_LOCALE, isLocale } from '../../i18n/locales';
-import { createCheckout, ShopError } from '../../lib/shop';
+import { createCheckout, isNetwork, ShopError } from '../../lib/shop';
 
 /**
  * The product form posts here (works without JavaScript). We ask the Omega API for a checkout
@@ -11,6 +11,7 @@ export const POST: APIRoute = async ({ request, redirect, clientAddress }) => {
   const form = await request.formData();
   const slug = String(form.get('slug') ?? '').trim();
   const email = String(form.get('email') ?? '').trim();
+  const network = String(form.get('network') ?? '');
   const rawLocale = String(form.get('locale') ?? '');
   const locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE;
   const back = (code: string) => redirect(`/${locale}/${encodeURIComponent(slug)}?error=${code}`, 303);
@@ -20,8 +21,10 @@ export const POST: APIRoute = async ({ request, redirect, clientAddress }) => {
   if (String(form.get('website') ?? '') !== '') return back('generic');
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 200) return back('invalid_email');
 
+  if (!isNetwork(network)) return back('network');
+
   try {
-    const checkout = await createCheckout({ slug, email, locale }, clientAddress);
+    const checkout = await createCheckout({ slug, email, locale, network }, clientAddress);
     const response = redirect(`/${locale}/order/${encodeURIComponent(checkout.id)}?t=${encodeURIComponent(checkout.token)}`, 303);
     response.headers.set('Cache-Control', 'no-store');
     return response;

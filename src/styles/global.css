@@ -867,3 +867,90 @@ code {
   border-color: var(--ink);
   color: #fff;
 }
+
+/* ---------- payment networks ---------- */
+.networks {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+.networks legend {
+  margin-bottom: 6px;
+  padding: 0;
+  font-weight: 600;
+  font-size: 0.925rem;
+}
+
+.network {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.network:has(input:checked) {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.network input {
+  width: 18px;
+  min-height: 0;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--brand);
+}
+
+.network span {
+  display: grid;
+}
+
+.network small {
+  color: var(--muted);
+}
+
+.net-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.fee-warning {
+  display: flex;
+  gap: 12px;
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border: 2px solid var(--bad);
+  border-radius: 12px;
+  background: var(--bad-soft);
+  color: var(--bad);
+}
+
+.fee-warning svg {
+  flex: none;
+}
+
+.fee-warning strong {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.fee-warning p {
+  margin: 4px 0 0;
+  color: #5c1a14;
+}
+
+.countdown {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}

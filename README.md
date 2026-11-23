@@ -1,6 +1,6 @@
 # Omega Digital — omegadijital.com
 
-Storefront for game codes and gift cards, paid with **USDT (TRC20)**. Built with [Astro](https://astro.build) and deployed on Netlify.
+Storefront for game codes and gift cards, paid with **USDT on TRC20, ERC20 or BEP20**. Built with [Astro](https://astro.build) and deployed on Netlify.
 
 - Every page is real HTML rendered on the server (Netlify Functions) and cached on Netlify's CDN for 5 minutes, so prices stay fresh and search engines can read every page.
 - 10 languages under `/{locale}`: `en tr es pt fr de ru ar id zh` (Arabic is right-to-left). `/` sends visitors to their browser language.
@@ -9,9 +9,9 @@ Storefront for game codes and gift cards, paid with **USDT (TRC20)**. Built with
 
 ## How buying works
 
-1. Product page (`/{locale}/{slug}`): the buyer enters an e-mail. The form posts to `/api/checkout`.
+1. Product page (`/{locale}/{slug}`): the buyer picks a network (from `GET /payment-options`, only networks with an address) and enters an e-mail. The form posts to `/api/checkout`.
 2. The server asks Omega for a checkout and redirects to `/{locale}/order/{id}?t={token}`.
-3. The order page shows the exact USDT amount, our TRC20 address and a QR code. It polls `/api/order/{id}` and reloads when the status changes.
+3. The order page shows the exact USDT amount, the network, our address with a QR code, a countdown and a warning that exchange withdrawal fees must be added on top. It polls `/api/order/{id}` and reloads when the status changes.
 4. Omega matches the transfer on-chain. A person approves it in the CMS, and the code is e-mailed.
 
 Order pages are `no-store` and `noindex`, and send `Referrer-Policy: no-referrer`, because the link holds the order token.

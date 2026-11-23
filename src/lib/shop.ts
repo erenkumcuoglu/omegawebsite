@@ -11,6 +11,18 @@ export interface Product {
   inStock: boolean;
 }
 
+/** USDT networks the Omega API can take (apps/api/src/lib/usdt-networks.ts). */
+export const NETWORKS = ['TRC20', 'ERC20', 'BEP20'] as const;
+export type Network = (typeof NETWORKS)[number];
+export const isNetwork = (value: unknown): value is Network => typeof value === 'string' && (NETWORKS as readonly string[]).includes(value);
+
+/** A network the shop has an address for right now. */
+export interface PaymentOption {
+  network: Network;
+  label: string;
+  asset: 'USDT';
+}
+
 export type CheckoutStatus = 'AWAITING_PAYMENT' | 'PAID' | 'APPROVED' | 'DELIVERED' | 'REJECTED' | 'EXPIRED';
 
 export interface Checkout {
@@ -24,6 +36,8 @@ export interface Checkout {
   locale: string;
   amount: string;
   network: string;
+  /** e.g. "Tron (TRC20)". */
+  networkLabel: string;
   asset: string;
   payTo: string;
   expiresAt: string;
@@ -32,7 +46,7 @@ export interface Checkout {
 }
 
 /** What went wrong, as a key the pages can translate (err_<code>). */
-export type ShopErrorCode = 'invalid_email' | 'out_of_stock' | 'unavailable' | 'too_many' | 'not_found' | 'generic';
+export type ShopErrorCode = 'invalid_email' | 'network' | 'out_of_stock' | 'unavailable' | 'too_many' | 'not_found' | 'generic';
 
 export class ShopError extends Error {
   constructor(readonly code: ShopErrorCode, readonly status: number) {
@@ -75,7 +89,12 @@ async function call<T>(path: string, init: RequestInit & { shopperIp?: string } 
     } catch {
       /* not JSON */
     }
-    const code = response.status === 409 && !/out of stock/i.test(message) ? 'unavailable' : codeFor(response.status);
+    const code =
+      response.status === 409 && !/out of stock/i.test(message)
+        ? 'unavailable'
+        : response.status === 503 && /network/i.test(message)
+          ? 'network'
+          : codeFor(response.status);
     throw new ShopError(code, response.status);
   }
   return (await response.json()) as T;
@@ -84,6 +103,12 @@ async function call<T>(path: string, init: RequestInit & { shopperIp?: string } 
 export async function catalog(): Promise<Product[]> {
   if (mock()) return MOCK_PRODUCTS;
   return call<Product[]>('/catalog');
+}
+
+export async function paymentOptions(): Promise<PaymentOption[]> {
+  if (mock()) return MOCK_OPTIONS;
+  const options = await call<PaymentOption[]>('/payment-options');
+  return options.filter((o) => isNetwork(o.network));
 }
 
 export async function product(slug: string): Promise<Product | null> {
@@ -96,7 +121,7 @@ export async function product(slug: string): Promise<Product | null> {
   }
 }
 
-export async function createCheckout(input: { slug: string; email: string; locale: Locale }, shopperIp: string): Promise<Checkout> {
+export async function createCheckout(input: { slug: string; email: string; locale: Locale; network: Network }, shopperIp: string): Promise<Checkout> {
   if (mock()) return mockCheckout(input);
   return call<Checkout>('/checkouts', {
     method: 'POST',
@@ -145,7 +170,13 @@ const MOCK_PRODUCTS: Product[] = [
 
 const mockOrders = new Map<string, Checkout>();
 
-function mockCheckout(input: { slug: string; email: string; locale: Locale }): Checkout {
+const MOCK_OPTIONS: PaymentOption[] = [
+  { network: 'TRC20', label: 'Tron (TRC20)', asset: 'USDT' },
+  { network: 'ERC20', label: 'Ethereum (ERC20)', asset: 'USDT' },
+  { network: 'BEP20', label: 'BNB Smart Chain (BEP20)', asset: 'USDT' },
+];
+
+function mockCheckout(input: { slug: string; email: string; locale: Locale; network: Network }): Checkout {
   const item = MOCK_PRODUCTS.find((p) => p.slug === input.slug);
   if (!item) throw new ShopError('not_found', 404);
   if (!item.inStock) throw new ShopError('out_of_stock', 409);
@@ -162,9 +193,10 @@ function mockCheckout(input: { slug: string; email: string; locale: Locale }): C
     email: input.email.replace(/^(.).*(@.*)$/, '$1***$2'),
     locale: input.locale,
     amount: (item.price + Math.floor(Math.random() * 999 + 1) / 1000).toFixed(3),
-    network: 'TRC20',
+    network: input.network,
+    networkLabel: MOCK_OPTIONS.find((o) => o.network === input.network)!.label,
     asset: 'USDT',
-    payTo: 'TXYZmockAddressForLocalPreviewOnly000',
+    payTo: input.network === 'TRC20' ? 'TXYZmockAddressForLocalPreviewOnly000' : '0x000000000000000000000000000000000000dEaD',
     expiresAt: new Date(now + 60 * 60 * 1000).toISOString(),
     paidAt: null,
     createdAt: new Date(now).toISOString(),

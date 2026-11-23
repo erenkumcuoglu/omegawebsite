@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Tile from '../../components/Tile.astro';
 import { formatUsd, isLocale } from '../../i18n/locales';
 import { fill, strings, type Strings } from '../../i18n/strings';
-import { product as loadProduct, type Product } from '../../lib/shop';
+import { paymentOptions, product as loadProduct, type PaymentOption, type Product } from '../../lib/shop';
 import { cacheCatalog } from '../../lib/http';
 import { SITE_NAME, SITE_URL } from '../../lib/site';
 
@@ -12,8 +12,9 @@ if (!isLocale(locale) || !slug) return Astro.rewrite('/404');
 const t = strings(locale);
 
 let item: Product | null;
+let options: PaymentOption[] = [];
 try {
-  item = await loadProduct(slug);
+  [item, options] = await Promise.all([loadProduct(slug), paymentOptions().catch(() => [])]);
 } catch {
   Astro.response.status = 503;
   Astro.response.headers.set('Cache-Control', 'no-store');
@@ -28,6 +29,7 @@ if (item) cacheCatalog(Astro.response.headers);
 
 // ?error=<code> comes back from /api/checkout when the order could not be started.
 const errorCode = Astro.url.searchParams.get('error');
+const buyable = Boolean(item?.inStock && options.length > 0);
 const errorKey = `err_${errorCode}` as keyof Strings;
 const error = errorCode ? (t[errorKey] ?? t.err_generic) : null;
 
@@ -100,12 +102,28 @@ const jsonLd = item
             <input type="hidden" name="locale" value={locale} />
             <p hidden><label>Leave empty <input name="website" tabindex="-1" autocomplete="off" /></label></p>
             {error && <p class="alert" role="alert">{error}</p>}
+            {options.length === 0 && item.inStock && <p class="alert">{t.err_unavailable}</p>}
+            {options.length > 0 && (
+              <fieldset class="networks" disabled={!buyable}>
+                <legend>{t.payNetwork}</legend>
+                {options.map((option, index) => (
+                  <label class="network">
+                    <input type="radio" name="network" value={option.network} required checked={index === 0} />
+                    <span>
+                      <strong>USDT · {option.network}</strong>
+                      <small>{option.label}</small>
+                    </span>
+                  </label>
+                ))}
+                <small class="muted">{t.payNetworkHint}</small>
+              </fieldset>
+            )}
             <label class="field">
               <span>{t.emailLabel}</span>
-              <input name="email" type="email" required autocomplete="email" inputmode="email" maxlength="200" disabled={!item.inStock} />
+              <input name="email" type="email" required autocomplete="email" inputmode="email" maxlength="200" disabled={!buyable} />
               <small class="muted">{t.emailHint}</small>
             </label>
-            <button class="btn btn-lg btn-block" type="submit" disabled={!item.inStock}>
+            <button class="btn btn-lg btn-block" type="submit" disabled={!buyable}>
               {item.inStock ? t.buy : t.outOfStock}
             </button>
             <p class="muted small">{t.buyNote}</p>

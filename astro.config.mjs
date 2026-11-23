@@ -7,7 +7,8 @@ export default defineConfig({
   // Pages are rendered on request and cached on Netlify's CDN (see src/lib/http.ts), so prices
   // stay fresh while search engines still get real HTML for every page and language.
   output: 'server',
-  adapter: netlify(),
+  // No edge functions here; their local emulator needs Deno, so keep it off in `astro dev`.
+  adapter: netlify({ devFeatures: { environmentVariables: false, images: true, edgeFunctions: false } }),
   trailingSlash: 'never',
   build: { format: 'file' },
   compressHTML: true,
