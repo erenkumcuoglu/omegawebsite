@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { DEFAULT_LOCALE, isLocale } from '../i18n/locales';
+import { strings } from '../i18n/strings';
+
+const first = Astro.url.pathname.split('/')[1];
+const locale = isLocale(first) ? first : DEFAULT_LOCALE;
+const t = strings(locale);
+---
+
+<Layout locale={locale} title={`${t.notFound} | Omega Digital`} description={t.notFoundText} path="" noindex>
+  <section class="wrap narrow center page-pad">
+    <h1>{t.notFound}</h1>
+    <p class="muted">{t.notFoundText}</p>
+    <a class="btn" href={`/${locale}`}>{t.newOrder}</a>
+  </section>
+</Layout>

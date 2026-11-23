@@ -1,0 +1,25 @@
+---
+import Tile from './Tile.astro';
+import { formatUsd, type Locale } from '../i18n/locales';
+import { strings } from '../i18n/strings';
+import type { Product } from '../lib/shop';
+
+interface Props {
+  item: Product;
+  locale: Locale;
+  family?: string;
+}
+const { item, locale, family } = Astro.props;
+const t = strings(locale);
+---
+
+<a class:list={['card', { soldout: !item.inStock }]} href={`/${locale}/${item.slug}`} data-family={family} data-search={`${item.title} ${item.family ?? ''}`.toLowerCase()}>
+  <Tile name={item.family ?? item.title} />
+  <span class="card-body">
+    <span class="card-title">{item.title}</span>
+    <span class="card-meta">
+      <strong class="price">{formatUsd(item.price, locale)}</strong>
+      <span class:list={['stock', { out: !item.inStock }]}>{item.inStock ? t.inStock : t.outOfStock}</span>
+    </span>
+  </span>
+</a>

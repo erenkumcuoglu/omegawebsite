@@ -1,53 +1,49 @@
-# Omega Digital
+# Omega Digital — omegadijital.com
 
-Oyun kodları, kuponlar ve dijital üyelikler için statik e-pin mağazası. Derleme adımı yoktur; saf HTML + CSS + JavaScript'tir.
+Storefront for game codes and gift cards, paid with **USDT (TRC20)**. Built with [Astro](https://astro.build) and deployed on Netlify.
 
-## Dosyalar
+- Every page is real HTML rendered on the server (Netlify Functions) and cached on Netlify's CDN for 5 minutes, so prices stay fresh and search engines can read every page.
+- 10 languages under `/{locale}`: `en tr es pt fr de ru ar id zh` (Arabic is right-to-left). `/` sends visitors to their browser language.
+- Each page has a canonical link, hreflang links, `x-default`, JSON-LD (Organization, FAQ, Product, Breadcrumb) and is listed in `/sitemap.xml`.
+- The catalog, prices and checkouts come from the Omega API (`/api/public/shop/*`). Only this site's server calls it, using the secret `WEB_API_TOKEN`; browsers never see the token.
 
-- `index.html` — giriş noktası (Netlify Forms algılama formu burada gizli olarak durur)
-- `app.js` — tüm sayfa ve sepet mantığı (hash tabanlı yönlendirme: `#/urun/...`, `#/sepet`, `#/odeme`)
-- `styles.css` — tema ve düzen
-- `assets/` — logo, favicon ve yerel ürün görselleri (`assets/tiles/`)
-- `netlify.toml` — Netlify yapılandırması
+## How buying works
 
-## Netlify'da yayına alma
+1. Product page (`/{locale}/{slug}`): the buyer enters an e-mail. The form posts to `/api/checkout`.
+2. The server asks Omega for a checkout and redirects to `/{locale}/order/{id}?t={token}`.
+3. The order page shows the exact USDT amount, our TRC20 address and a QR code. It polls `/api/order/{id}` and reloads when the status changes.
+4. Omega matches the transfer on-chain. A person approves it in the CMS, and the code is e-mailed.
 
-### Seçenek 1: Sürükle-bırak (en hızlı)
+Order pages are `no-store` and `noindex`, and send `Referrer-Policy: no-referrer`, because the link holds the order token.
 
-1. [app.netlify.com/drop](https://app.netlify.com/drop) adresini açın.
-2. Bu klasörü (`OmegaDijitalWebsite`) olduğu gibi sayfaya sürükleyin.
-3. Site saniyeler içinde yayında olur; Site settings → Domain'den adı değiştirebilirsiniz.
+## Files
 
-### Seçenek 2: GitHub üzerinden (önerilen — güncellemeler otomatik yayınlanır)
+| Path | What |
+| --- | --- |
+| `src/pages/[locale]/index.astro` | Home: hero, catalog (search + brand chips), how it works, FAQ |
+| `src/pages/[locale]/[slug].astro` | Product page and order form |
+| `src/pages/[locale]/order/[id].astro` | Payment / order status page |
+| `src/pages/[locale]/terms.astro` | Terms & privacy (EN + TR; other languages show EN) |
+| `src/pages/api/checkout.ts`, `src/pages/api/order/[id].ts` | Server endpoints that call Omega |
+| `src/pages/sitemap.xml.ts` | Sitemap with hreflang alternates |
+| `src/i18n/` | Languages and all interface copy |
+| `src/lib/shop.ts` | Omega shop API client (+ sample catalog for local preview) |
+| `src/lib/site.ts` | Site name, URL, support e-mail |
+| `public/__forms.html` | Netlify Forms definition for the footer support form |
 
-1. GitHub'da yeni bir repo oluşturun ve bu klasörü push'layın:
-   ```bash
-   cd OmegaDijitalWebsite
-   git init
-   git add .
-   git commit -m "Omega Digital ilk sürüm"
-   git branch -M main
-   git remote add origin https://github.com/KULLANICI_ADINIZ/omega-dijital.git
-   git push -u origin main
-   ```
-2. Netlify → "Add new site" → "Import an existing project" → GitHub repoyu seçin.
-3. Build command boş, publish directory `.` — `netlify.toml` bunu zaten tanımlar. Deploy'a basın.
-4. Bundan sonra `main`'e her push otomatik yayınlanır.
-
-## Destek formu → eren@omegadijital.com
-
-Footer'daki form Netlify Forms kullanır:
-
-1. Site yayına alındıktan sonra Netlify panelinde **Forms** sekmesinde `destek` formu görünür.
-2. **Forms → Form notifications → Add notification → Email notification** adımından bildirim adresi olarak `eren@omegadijital.com` girin.
-3. Artık her form gönderimi bu adrese e-posta olarak düşer.
-
-Not: Site Netlify dışında (ör. yerelde `file://` ile) açıldığında form otomatik olarak `mailto:eren@omegadijital.com` yedeğine döner.
-
-## Yerelde çalıştırma
+## Local development
 
 ```bash
-cd OmegaDijitalWebsite
-python3 -m http.server 8080
-# http://localhost:8080
+npm install
+cp .env.example .env    # set SHOP_MOCK=1 to use the sample catalog, or SHOP_API_URL + WEB_API_TOKEN for the real API
+npm run dev             # http://localhost:4321
+npm run check && npm run build
 ```
+
+## Netlify
+
+- Build command `npm run build`, publish directory `dist` (already in `netlify.toml`). Node 22.
+- **Environment variables** (Site configuration → Environment variables, scope *Functions*):
+  - `SHOP_API_URL` = `https://api.omegadijital.com`
+  - `WEB_API_TOKEN` = same value as `WEB_API_TOKEN` on the Omega API
+- Support form: Netlify → Forms → `support` → add an e-mail notification.

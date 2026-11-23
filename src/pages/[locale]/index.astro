@@ -1,0 +1,142 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { isLocale } from '../../i18n/locales';
+import { strings } from '../../i18n/strings';
+import { catalog, groupByFamily, type Product } from '../../lib/shop';
+import { cacheCatalog } from '../../lib/http';
+import { SITE_NAME, SITE_URL, SUPPORT_EMAIL } from '../../lib/site';
+
+const { locale } = Astro.params;
+if (!isLocale(locale)) return Astro.rewrite('/404');
+const t = strings(locale);
+
+let products: Product[] | null = null;
+try {
+  products = await catalog();
+  cacheCatalog(Astro.response.headers);
+} catch {
+  // Show the page without products; do not cache the failure.
+  Astro.response.status = 503;
+  Astro.response.headers.set('Cache-Control', 'no-store');
+}
+const groups = products ? groupByFamily(products, t.other) : [];
+
+const faq = [
+  [t.faq1Q, t.faq1A],
+  [t.faq2Q, t.faq2A],
+  [t.faq3Q, t.faq3A],
+  [t.faq4Q, t.faq4A],
+];
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'Organization', name: SITE_NAME, url: SITE_URL, logo: `${SITE_URL}/omega-logo.png`, email: SUPPORT_EMAIL },
+  { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_NAME, url: `${SITE_URL}/${locale}`, inLanguage: locale },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+---
+
+<Layout locale={locale} title={t.homeTitle} description={t.homeDesc} path="" jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>{t.heroTitle}</h1>
+        <p class="lead">{t.heroText}</p>
+        <a class="btn btn-lg" href="#catalog">{t.heroCta}</a>
+      </div>
+      <ul class="trust" role="list">
+        <li><span class="trust-icon" aria-hidden="true">₮</span>{t.trustUsdt}</li>
+        <li><span class="trust-icon" aria-hidden="true">✓</span>{t.trustChecked}</li>
+        <li><span class="trust-icon" aria-hidden="true">@</span>{t.trustEmail}</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="catalog" class="wrap section">
+    <div class="section-head">
+      <h2>{t.navCatalog}</h2>
+      {
+        groups.length > 0 && (
+          <label class="search">
+            <span class="sr-only">{t.search}</span>
+            <input id="search" type="search" placeholder={t.search} autocomplete="off" />
+          </label>
+        )
+      }
+    </div>
+    {products === null && <p class="empty">{t.catalogDown}</p>}
+    {products !== null && groups.length === 0 && <p class="empty">{t.catalogEmpty}</p>}
+    {
+      groups.length > 1 && (
+        <div class="chips" role="group" aria-label={t.navCatalog}>
+          <button type="button" class="chip" aria-pressed="true" data-chip="">{t.all}</button>
+          {groups.map((group) => (
+            <button type="button" class="chip" aria-pressed="false" data-chip={group.family}>
+              {group.family}
+            </button>
+          ))}
+        </div>
+      )
+    }
+    {
+      groups.length > 0 && (
+        <div class="grid">
+          {groups.flatMap((group) =>
+            group.products.map((item) => <ProductCard item={item} locale={locale} family={group.family} />),
+          )}
+        </div>
+      )
+    }
+    <p id="no-results" class="empty" hidden>{t.noResults}</p>
+  </section>
+
+  <section id="how" class="band">
+    <div class="wrap section">
+      <h2>{t.howTitle}</h2>
+      <ol class="steps">
+        <li><strong>{t.how1Title}</strong><span>{t.how1Text}</span></li>
+        <li><strong>{t.how2Title}</strong><span>{t.how2Text}</span></li>
+        <li><strong>{t.how3Title}</strong><span>{t.how3Text}</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="faq" class="wrap section narrow">
+    <h2>{t.faqTitle}</h2>
+    {
+      faq.map(([q, a]) => (
+        <details class="faq">
+          <summary>{q}</summary>
+          <p>{a}</p>
+        </details>
+      ))
+    }
+  </section>
+</Layout>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('#search');
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('[data-chip]')];
+  let family = '';
+  const apply = () => {
+    const term = (input?.value ?? '').trim().toLowerCase();
+    let shown = 0;
+    document.querySelectorAll<HTMLElement>('[data-search]').forEach((card) => {
+      const match = (!term || (card.dataset.search ?? '').includes(term)) && (!family || card.dataset.family === family);
+      card.hidden = !match;
+      if (match) shown += 1;
+    });
+    document.querySelector<HTMLElement>('#no-results')!.hidden = shown > 0;
+  };
+  input?.addEventListener('input', apply);
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      family = chip.dataset.chip ?? '';
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      apply();
+    }),
+  );
+</script>

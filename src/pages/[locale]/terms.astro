@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { isLocale } from '../../i18n/locales';
+import { strings } from '../../i18n/strings';
+import { cacheCatalog } from '../../lib/http';
+import { SITE_NAME, SUPPORT_EMAIL } from '../../lib/site';
+
+const { locale } = Astro.params;
+if (!isLocale(locale)) return Astro.rewrite('/404');
+const t = strings(locale);
+cacheCatalog(Astro.response.headers);
+
+// Written in English and Turkish; other languages show the English text (marked lang="en").
+// Have these reviewed before going live.
+const TEXT = {
+  en: [
+    ['Orders', 'An order is accepted once the exact USDT amount shown on its order page arrives on the TRC20 network within the payment time and the order passes our manual check. We may refuse an order and refund the payment, minus network fees, to the sending address.'],
+    ['Prices and payment', 'Prices are shown in US dollars and paid as the same amount of USDT (TRC20), plus a small unique fraction (under 1 USDT) that identifies the order. Payments on other networks or in other coins cannot be credited automatically. Network fees are paid by the sender.'],
+    ['Delivery', 'Codes are sent to the e-mail address given with the order. Digital codes cannot be returned once they are delivered. If a code does not work, contact us with your order number and we will check it with the supplier.'],
+    ['Late or wrong payments', 'Payments that arrive late, with a different amount or more than once are reviewed by hand. Contact us with your order number and transaction hash (TXID).'],
+    ['Privacy', 'We keep your e-mail address, order details, IP address and the payment transaction only to deliver your order, prevent fraud and meet our legal duties. We do not sell your data. Blockchain transactions are public by nature. Ask us at any time to see or delete your data, unless we must keep it by law.'],
+  ],
+  tr: [
+    ['Siparişler', 'Sipariş sayfasında gösterilen USDT tutarı ödeme süresi içinde TRC20 ağında aynen ulaştığında ve sipariş manuel kontrolümüzden geçtiğinde sipariş kabul edilir. Bir siparişi reddedip ödemeyi, ağ ücretleri düşülerek, gönderen adrese iade edebiliriz.'],
+    ['Fiyatlar ve ödeme', 'Fiyatlar ABD doları olarak gösterilir ve aynı tutarda USDT (TRC20) ile, siparişi tanımlayan küçük ve benzersiz bir küsuratla (1 USDT’den az) ödenir. Başka ağ veya coinlerle yapılan ödemeler otomatik eşleşmez. Ağ ücretini gönderen öder.'],
+    ['Teslimat', 'Kodlar siparişte verilen e-posta adresine gönderilir. Dijital kodlar teslim edildikten sonra iade edilemez. Kod çalışmazsa sipariş numaranızla bize yazın, tedarikçiyle birlikte kontrol edelim.'],
+    ['Geç veya hatalı ödemeler', 'Geç gelen, farklı tutarda ya da birden fazla kez yapılan ödemeler elle incelenir. Sipariş numaranız ve işlem kodunuzla (TXID) bize yazın.'],
+    ['Gizlilik', 'E-posta adresinizi, sipariş bilgilerinizi, IP adresinizi ve ödeme işlemini yalnızca siparişinizi teslim etmek, dolandırıcılığı önlemek ve yasal yükümlülüklerimizi yerine getirmek için saklarız. Verilerinizi satmayız. Blok zinciri işlemleri doğası gereği herkese açıktır. Yasal saklama zorunluluğu olmadıkça verilerinizi görmek veya sildirmek için istediğiniz zaman bize yazabilirsiniz.'],
+  ],
+} as const;
+const lang = locale === 'tr' ? 'tr' : 'en';
+const sections = TEXT[lang];
+---
+
+<Layout locale={locale} title={`${t.terms} | ${SITE_NAME}`} description={t.homeDesc} path="/terms">
+  <article class="wrap narrow page-pad prose">
+    <h1>{t.terms}</h1>
+    <div lang={lang === locale ? undefined : 'en'} dir={lang === locale ? undefined : 'ltr'}>
+      {
+        sections.map(([heading, body]) => (
+          <section>
+            <h2>{heading}</h2>
+            <p>{body}</p>
+          </section>
+        ))
+      }
+      <p>{t.contact}: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
+    </div>
+  </article>
+</Layout>

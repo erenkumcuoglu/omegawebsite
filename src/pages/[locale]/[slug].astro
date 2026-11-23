@@ -1,0 +1,130 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Tile from '../../components/Tile.astro';
+import { formatUsd, isLocale } from '../../i18n/locales';
+import { fill, strings, type Strings } from '../../i18n/strings';
+import { product as loadProduct, type Product } from '../../lib/shop';
+import { cacheCatalog } from '../../lib/http';
+import { SITE_NAME, SITE_URL } from '../../lib/site';
+
+const { locale, slug } = Astro.params;
+if (!isLocale(locale) || !slug) return Astro.rewrite('/404');
+const t = strings(locale);
+
+let item: Product | null;
+try {
+  item = await loadProduct(slug);
+} catch {
+  Astro.response.status = 503;
+  Astro.response.headers.set('Cache-Control', 'no-store');
+  item = null;
+}
+const missing = item === null && Astro.response.status !== 503;
+if (missing) {
+  Astro.response.status = 404;
+  Astro.response.headers.set('Cache-Control', 'public, max-age=60');
+}
+if (item) cacheCatalog(Astro.response.headers);
+
+// ?error=<code> comes back from /api/checkout when the order could not be started.
+const errorCode = Astro.url.searchParams.get('error');
+const errorKey = `err_${errorCode}` as keyof Strings;
+const error = errorCode ? (t[errorKey] ?? t.err_generic) : null;
+
+const title = item ? fill(t.productTitle, { title: item.title }) : `${missing ? t.notFound : t.catalogDown} | ${SITE_NAME}`;
+const description = item ? fill(t.productDesc, { title: item.title }) : missing ? t.notFoundText : t.catalogDown;
+const jsonLd = item
+  ? [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: item.title,
+        ...(item.family ? { brand: { '@type': 'Brand', name: item.family } } : {}),
+        sku: item.slug,
+        description,
+        offers: {
+          '@type': 'Offer',
+          url: `${SITE_URL}/${locale}/${item.slug}`,
+          priceCurrency: 'USD',
+          price: item.price.toFixed(2),
+          availability: item.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          seller: { '@type': 'Organization', name: SITE_NAME },
+        },
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: t.home, item: `${SITE_URL}/${locale}` },
+          { '@type': 'ListItem', position: 2, name: item.title, item: `${SITE_URL}/${locale}/${item.slug}` },
+        ],
+      },
+    ]
+  : [];
+---
+
+<Layout locale={locale} title={title} description={description} path={`/${slug}`} noindex={!item} jsonLd={jsonLd}>
+  {
+    !item && (
+      <section class="wrap narrow center page-pad">
+        {missing && <h1>{t.notFound}</h1>}
+        <p class="empty">{missing ? t.notFoundText : t.catalogDown}</p>
+        <a class="btn" href={`/${locale}`}>{t.newOrder}</a>
+      </section>
+    )
+  }
+  {
+    item && (
+      <div class="wrap page-pad">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href={`/${locale}`}>{t.home}</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{item.title}</span>
+        </nav>
+        <div class="product">
+          <div class="product-head">
+            <Tile name={item.family ?? item.title} size="large" />
+            <div>
+              {item.family && <p class="eyebrow">{item.family}</p>}
+              <h1>{item.title}</h1>
+              <p class="product-price">
+                <strong>{formatUsd(item.price, locale)}</strong>
+                <span class:list={['stock', { out: !item.inStock }]}>{item.inStock ? t.inStock : t.outOfStock}</span>
+              </p>
+              <p class="muted small">{t.priceNote}</p>
+            </div>
+          </div>
+
+          <form class="panel buy" method="POST" action="/api/checkout">
+            <input type="hidden" name="slug" value={item.slug} />
+            <input type="hidden" name="locale" value={locale} />
+            <p hidden><label>Leave empty <input name="website" tabindex="-1" autocomplete="off" /></label></p>
+            {error && <p class="alert" role="alert">{error}</p>}
+            <label class="field">
+              <span>{t.emailLabel}</span>
+              <input name="email" type="email" required autocomplete="email" inputmode="email" maxlength="200" disabled={!item.inStock} />
+              <small class="muted">{t.emailHint}</small>
+            </label>
+            <button class="btn btn-lg btn-block" type="submit" disabled={!item.inStock}>
+              {item.inStock ? t.buy : t.outOfStock}
+            </button>
+            <p class="muted small">{t.buyNote}</p>
+            <ol class="mini-steps">
+              <li>{t.how1Title}</li>
+              <li>{t.how2Title}</li>
+              <li>{t.how3Title}</li>
+            </ol>
+          </form>
+        </div>
+      </div>
+    )
+  }
+</Layout>
+
+<script>
+  // Stop double submits (each one would reserve a new amount).
+  document.querySelector<HTMLFormElement>('form.buy')?.addEventListener('submit', (event) => {
+    const button = (event.currentTarget as HTMLFormElement).querySelector('button');
+    if (button) setTimeout(() => (button.disabled = true));
+  });
+</script>

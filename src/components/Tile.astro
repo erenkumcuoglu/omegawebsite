@@ -1,0 +1,14 @@
+---
+import { tileOf } from '../lib/tile';
+
+interface Props {
+  name: string;
+  size?: 'card' | 'large';
+}
+const { name, size = 'card' } = Astro.props;
+const { initials, hue } = tileOf(name);
+---
+
+<div class:list={['tile', size]} style={`--h:${hue}`} aria-hidden="true">
+  <span>{initials}</span>
+</div>

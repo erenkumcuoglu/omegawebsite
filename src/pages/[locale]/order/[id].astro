@@ -1,0 +1,142 @@
+---
+import QRCode from 'qrcode';
+import Layout from '../../../layouts/Layout.astro';
+import { isLocale } from '../../../i18n/locales';
+import { fill, strings, type Strings } from '../../../i18n/strings';
+import { getCheckout, type Checkout } from '../../../lib/shop';
+import { noStore } from '../../../lib/http';
+import { SITE_NAME, SUPPORT_EMAIL } from '../../../lib/site';
+
+const { locale, id } = Astro.params;
+if (!isLocale(locale) || !id) return Astro.rewrite('/404');
+const t = strings(locale);
+noStore(Astro.response.headers);
+
+const token = Astro.url.searchParams.get('t') ?? '';
+let order: Checkout | null = null;
+let down = false;
+try {
+  order = token ? await getCheckout(id, token) : null;
+} catch {
+  down = true;
+}
+if (!order) Astro.response.status = down ? 503 : 404;
+
+const awaiting = order?.status === 'AWAITING_PAYMENT';
+const qr = order && awaiting ? await QRCode.toString(order.payTo, { type: 'svg', margin: 1, errorCorrectionLevel: 'M' }) : '';
+const statusLabel = order ? t[`status_${order.status}` as keyof Strings] : '';
+const statusText = order ? fill(t[`text_${order.status}` as keyof Strings], { email: order.email }) : '';
+const open = order && ['AWAITING_PAYMENT', 'PAID', 'APPROVED'].includes(order.status);
+const tone = !order ? '' : order.status === 'DELIVERED' ? 'ok' : ['REJECTED', 'EXPIRED'].includes(order.status) ? 'bad' : 'wait';
+---
+
+<Layout locale={locale} title={order ? `${fill(t.orderTitle, { number: order.number })} | ${SITE_NAME}` : `${t.notFound} | ${SITE_NAME}`} description={t.homeDesc} path="" noindex>
+  <section class="wrap narrow page-pad">
+    {
+      !order && (
+        <div class="center">
+          <h1>{down ? t.err_generic : t.notFound}</h1>
+          <p class="muted">{down ? t.catalogDown : t.notFoundText}</p>
+          <a class="btn" href={`/${locale}`}>{t.newOrder}</a>
+        </div>
+      )
+    }
+    {
+      order && (
+        <div class="order" data-id={order.id} data-token={order.token} data-status={order.status} data-open={open ? '1' : ''}>
+          <p class="eyebrow">{order.title}</p>
+          <h1>{fill(t.orderTitle, { number: order.number })}</h1>
+          <p class:list={['status-pill', tone]}>{statusLabel}</p>
+          <p class="lead">{statusText}</p>
+
+          {awaiting && (
+            <div class="panel pay">
+              <div class="pay-grid">
+                <div class="qr" set:html={qr} />
+                <dl class="pay-lines">
+                  <div>
+                    <dt>{t.amount}</dt>
+                    <dd>
+                      <code class="big" dir="ltr">{order.amount} {order.asset}</code>
+                      <button class="copy" type="button" data-copy={order.amount} data-done={t.copied}>{t.copy}</button>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{t.network}</dt>
+                    <dd><strong>{order.network}</strong> (Tron)</dd>
+                  </div>
+                  <div>
+                    <dt>{t.address}</dt>
+                    <dd>
+                      <code class="addr" dir="ltr">{order.payTo}</code>
+                      <button class="copy" type="button" data-copy={order.payTo} data-done={t.copied}>{t.copy}</button>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+              <p class="alert">{t.exactWarning}</p>
+              <p class="muted small">
+                <span id="countdown" data-expires={order.expiresAt} data-template={t.timeLeft} />
+              </p>
+            </div>
+          )}
+
+          <dl class="summary">
+            <div><dt>{t.orderFor}</dt><dd>{order.title}</dd></div>
+            <div><dt>{t.orderEmail}</dt><dd>{order.email}</dd></div>
+          </dl>
+          {open && <p class="muted small">{t.autoRefresh}</p>}
+          <p class="muted small">{t.keepLink}</p>
+          <p class="muted small">{t.contact}: <a href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(`Order ${order.number}`)}`}>{SUPPORT_EMAIL}</a></p>
+        </div>
+      )
+    }
+  </section>
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('button[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? '');
+        const label = button.textContent;
+        button.textContent = button.dataset.done ?? '✓';
+        setTimeout(() => (button.textContent = label), 1500);
+      } catch {
+        /* clipboard blocked: the text is still selectable */
+      }
+    });
+  });
+
+  const countdown = document.querySelector<HTMLElement>('#countdown');
+  if (countdown) {
+    const end = Date.parse(countdown.dataset.expires ?? '');
+    const tick = () => {
+      const left = Math.max(0, end - Date.now());
+      const m = Math.floor(left / 60000);
+      const s = Math.floor((left % 60000) / 1000);
+      countdown.textContent = (countdown.dataset.template ?? '{time}').replace('{time}', `${m}:${String(s).padStart(2, '0')}`);
+    };
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  // While the order is open, ask for its status and reload when it changes.
+  const order = document.querySelector<HTMLElement>('.order[data-open="1"]');
+  if (order) {
+    const url = `/api/order/${encodeURIComponent(order.dataset.id ?? '')}?t=${encodeURIComponent(order.dataset.token ?? '')}`;
+    const poll = async () => {
+      if (document.visibilityState !== 'visible') return;
+      try {
+        const response = await fetch(url, { cache: 'no-store' });
+        if (!response.ok) return;
+        const { status } = (await response.json()) as { status?: string };
+        if (status && status !== order.dataset.status) location.reload();
+      } catch {
+        /* try again next time */
+      }
+    };
+    setInterval(poll, 15000);
+    document.addEventListener('visibilitychange', poll);
+  }
+</script>
