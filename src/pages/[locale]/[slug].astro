@@ -4,7 +4,7 @@ import Tile from '../../components/Tile.astro';
 import { formatUsd, isLocale } from '../../i18n/locales';
 import { fill, strings, type Strings } from '../../i18n/strings';
 import ProductCard from '../../components/ProductCard.astro';
-import { catalog, paymentOptions, type PaymentOption, type Product } from '../../lib/shop';
+import { catalog, MAX_QUANTITY, type Product } from '../../lib/shop';
 import { brandCopy, brandOf, brandPath, findBrand } from '../../content/brands';
 import { cacheCatalog } from '../../lib/http';
 import { SITE_NAME, SITE_URL } from '../../lib/site';
@@ -19,9 +19,8 @@ const t = strings(locale);
 
 let item: Product | null;
 let all: Product[] = [];
-let options: PaymentOption[] = [];
 try {
-  [all, options] = await Promise.all([catalog(), paymentOptions().catch(() => [])]);
+  all = await catalog();
   item = all.find((p) => p.slug === slug) ?? null;
 } catch {
   Astro.response.status = 503;
@@ -37,7 +36,7 @@ if (item) cacheCatalog(Astro.response.headers);
 
 // ?error=<code> comes back from /api/checkout when the order could not be started.
 const errorCode = Astro.url.searchParams.get('error');
-const buyable = Boolean(item?.inStock && options.length > 0);
+const added = Astro.url.searchParams.get('added') === '1';
 const errorKey = `err_${errorCode}` as keyof Strings;
 const error = errorCode ? (t[errorKey] ?? t.err_generic) : null;
 
@@ -117,36 +116,31 @@ const jsonLd = item
             </div>
           </div>
 
-          <form class="panel buy" method="POST" action="/api/checkout">
+          <form class="panel buy" method="POST" action="/api/cart">
             <input type="hidden" name="slug" value={item.slug} />
             <input type="hidden" name="locale" value={locale} />
-            <p hidden><label>Leave empty <input name="website" tabindex="-1" autocomplete="off" /></label></p>
-            {error && <p class="alert" role="alert">{error}</p>}
-            {options.length === 0 && item.inStock && <p class="alert">{t.err_unavailable}</p>}
-            {options.length > 0 && (
-              <fieldset class="networks" disabled={!buyable}>
-                <legend>{t.payNetwork}</legend>
-                {options.map((option, index) => (
-                  <label class="network">
-                    <input type="radio" name="network" value={option.network} required checked={index === 0} />
-                    <span>
-                      <strong>USDT · {option.network}</strong>
-                      <small>{option.label}</small>
-                    </span>
-                  </label>
-                ))}
-                <small class="muted">{t.payNetworkHint}</small>
-              </fieldset>
+            <input type="hidden" name="back" value={`/${locale}/${item.slug}`} />
+            {added && (
+              <p class="notice-ok" role="status">
+                {t.added} <a href={`/${locale}/cart`}>{t.goToCart} →</a>
+              </p>
             )}
-            <label class="field">
-              <span>{t.emailLabel}</span>
-              <input name="email" type="email" required autocomplete="email" inputmode="email" maxlength="200" disabled={!buyable} />
-              <small class="muted">{t.emailHint}</small>
-            </label>
-            <button class="btn btn-lg btn-block" type="submit" disabled={!buyable}>
-              {item.inStock ? t.buy : t.outOfStock}
-            </button>
-            <p class="muted small">{t.buyNote}</p>
+            {error && <p class="alert" role="alert">{error}</p>}
+            <div class="field">
+              <label for="qty">{t.quantity}</label>
+              <div class="stepper" data-stepper>
+                <button type="button" data-step="-1" aria-label={t.decrease} disabled={!item.inStock}>−</button>
+                <input id="qty" name="quantity" type="number" inputmode="numeric" min="1" max={MAX_QUANTITY} value="1" disabled={!item.inStock} />
+                <button type="button" data-step="1" aria-label={t.increase} disabled={!item.inStock}>+</button>
+              </div>
+            </div>
+            <div class="buy-actions">
+              <button class="btn btn-lg" type="submit" name="action" value="buy" disabled={!item.inStock}>
+                {item.inStock ? t.buyNow : t.outOfStock}
+              </button>
+              <button class="btn btn-lg btn-ghost" type="submit" name="action" value="add" disabled={!item.inStock}>{t.addToCart}</button>
+            </div>
+            <p class="muted small">{t.cartLimits}</p>
             <ol class="mini-steps">
               <li>{t.how1Title}</li>
               <li>{t.how2Title}</li>
@@ -191,9 +185,14 @@ const jsonLd = item
 </Layout>
 
 <script>
-  // Stop double submits (each one would reserve a new amount).
-  document.querySelector<HTMLFormElement>('form.buy')?.addEventListener('submit', (event) => {
-    const button = (event.currentTarget as HTMLFormElement).querySelector('button');
-    if (button) setTimeout(() => (button.disabled = true));
+  // Quantity stepper: − / + buttons around a number input (works without JS as a plain input).
+  document.querySelectorAll<HTMLElement>('[data-stepper]').forEach((stepper) => {
+    const input = stepper.querySelector('input')!;
+    stepper.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((button) =>
+      button.addEventListener('click', () => {
+        const next = Math.min(Number(input.max) || 20, Math.max(Number(input.min) || 1, (Number(input.value) || 1) + Number(button.dataset.step)));
+        input.value = String(next);
+      }),
+    );
   });
 </script>

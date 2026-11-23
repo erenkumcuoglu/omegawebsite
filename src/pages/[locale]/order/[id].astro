@@ -1,7 +1,7 @@
 ---
 import QRCode from 'qrcode';
 import Layout from '../../../layouts/Layout.astro';
-import { isLocale } from '../../../i18n/locales';
+import { formatUsd, isLocale } from '../../../i18n/locales';
 import { fill, strings, type Strings } from '../../../i18n/strings';
 import { getCheckout, type Checkout } from '../../../lib/shop';
 import { noStore } from '../../../lib/http';
@@ -22,12 +22,25 @@ try {
 }
 if (!order) Astro.response.status = down ? 503 : 404;
 
-const awaiting = order?.status === 'AWAITING_PAYMENT';
-const qr = order && awaiting ? await QRCode.toString(order.payTo, { type: 'svg', margin: 1, errorCorrectionLevel: 'M' }) : '';
-const statusLabel = order ? t[`status_${order.status}` as keyof Strings] : '';
-const statusText = order ? fill(t[`text_${order.status}` as keyof Strings], { email: order.email }) : '';
-const open = order && ['AWAITING_PAYMENT', 'PAID', 'APPROVED'].includes(order.status);
-const tone = !order ? '' : order.status === 'DELIVERED' ? 'ok' : ['REJECTED', 'EXPIRED'].includes(order.status) ? 'bad' : 'wait';
+const topup = order?.kind === 'TOPUP';
+const fromBalance = order?.paymentMethod === 'BALANCE';
+const awaiting = order?.status === 'AWAITING_PAYMENT' && !fromBalance && Boolean(order?.payTo && order?.amount);
+const qr = order && awaiting ? await QRCode.toString(order.payTo!, { type: 'svg', margin: 1, errorCorrectionLevel: 'M' }) : '';
+// A top-up ends at APPROVED (credited); an order ends at DELIVERED.
+const done = order ? (topup ? order.status === 'APPROVED' : order.status === 'DELIVERED') : false;
+const statusLabel = !order ? '' : topup && order.status === 'APPROVED' ? t.status_CREDITED : t[`status_${order.status}` as keyof Strings];
+const statusText = !order
+  ? ''
+  : topup && order.status === 'APPROVED'
+    ? t.text_CREDITED
+    : topup && order.status === 'PAID'
+      ? t.text_TOPUP_PAID
+      : fromBalance && order.status === 'PAID'
+        ? t.paidFromBalance
+        : fill(t[`text_${order.status}` as keyof Strings], { email: order.email });
+const open = order && !done && ['AWAITING_PAYMENT', 'PAID', 'APPROVED'].includes(order.status);
+const tone = !order ? '' : done ? 'ok' : ['REJECTED', 'EXPIRED'].includes(order.status) ? 'bad' : 'wait';
+const heading = order ? (topup ? t.topupOrderTitle : order.title) : '';
 ---
 
 <Layout locale={locale} title={order ? `${fill(t.orderTitle, { number: order.number })} | ${SITE_NAME}` : `${t.notFound} | ${SITE_NAME}`} description={t.homeDesc} path="" noindex>
@@ -44,7 +57,7 @@ const tone = !order ? '' : order.status === 'DELIVERED' ? 'ok' : ['REJECTED', 'E
     {
       order && (
         <div class="order" data-id={order.id} data-token={order.token} data-status={order.status} data-open={open ? '1' : ''}>
-          <p class="eyebrow">{order.title}</p>
+          <p class="eyebrow">{heading}</p>
           <h1>{fill(t.orderTitle, { number: order.number })}</h1>
           <p class:list={['status-pill', tone]}>{statusLabel}</p>
           <p class="lead">{statusText}</p>
@@ -55,7 +68,7 @@ const tone = !order ? '' : order.status === 'DELIVERED' ? 'ok' : ['REJECTED', 'E
                 <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="currentColor" d="M12 2 1 21h22L12 2Zm0 4.2L19.5 19h-15L12 6.2ZM11 10v5h2v-5h-2Zm0 6v2h2v-2h-2Z"/></svg>
                 <div>
                   <strong>{t.feeTitle}</strong>
-                  <p>{fill(t.feeText, { amount: order.amount })}</p>
+                  <p>{fill(t.feeText, { amount: order.amount! })}</p>
                 </div>
               </div>
               <div class="pay-grid">
@@ -81,18 +94,32 @@ const tone = !order ? '' : order.status === 'DELIVERED' ? 'ok' : ['REJECTED', 'E
                   </div>
                 </dl>
               </div>
-              <p class="alert">{fill(t.exactWarning, { network: order.networkLabel })}</p>
+              <p class="alert">{fill(t.exactWarning, { network: order.networkLabel! })}</p>
               <p class="countdown">
                 <span id="countdown" data-expires={order.expiresAt} data-template={t.timeLeft} />
               </p>
             </div>
           )}
 
+          {order.lines.length > 0 && (
+            <table class="lines">
+              <caption class="sr-only">{t.items}</caption>
+              <tbody>
+                {order.lines.map((line) => (
+                  <tr>
+                    <td>{line.title}</td>
+                    <td class="num">{line.quantity} × {formatUsd(line.unitPrice, locale)}</td>
+                    <td class="num">{formatUsd(line.quantity * line.unitPrice, locale)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
           <dl class="summary">
-            <div><dt>{t.orderFor}</dt><dd>{order.title}</dd></div>
+            <div><dt>{topup ? t.topupOrderTitle : t.total}</dt><dd><strong>{formatUsd(order.total, locale)}</strong></dd></div>
             <div><dt>{t.orderEmail}</dt><dd>{order.email}</dd></div>
           </dl>
-          {open && <p class="muted small">{t.autoRefresh}</p>}
+          {open && !fromBalance && <p class="muted small">{t.autoRefresh}</p>}
           <p class="muted small">{t.keepLink}</p>
           <p class="muted small">{t.contact}: <a href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(`Order ${order.number}`)}`}>{SUPPORT_EMAIL}</a></p>
         </div>

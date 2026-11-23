@@ -1,4 +1,5 @@
 import type { Locale } from './locales';
+import accountEn, { type AccountStrings } from './account/en';
 
 /**
  * Interface copy for every site language. Placeholders: {title}, {email}, {time}.
@@ -107,9 +108,10 @@ const en = {
   rights: 'All rights reserved.',
 };
 
-export type Strings = typeof en;
+type BaseStrings = typeof en;
+export type Strings = BaseStrings & AccountStrings;
 
-const tr: Strings = {
+const tr: BaseStrings = {
   brands: 'Popüler markalar',
   brandProducts: '{name} kodları',
   moreFrom: 'Diğer {name} kodları',
@@ -212,7 +214,7 @@ const tr: Strings = {
   rights: 'Tüm hakları saklıdır.',
 };
 
-const es: Strings = {
+const es: BaseStrings = {
   brands: 'Marcas populares',
   brandProducts: 'Códigos de {name}',
   moreFrom: 'Más códigos de {name}',
@@ -315,7 +317,7 @@ const es: Strings = {
   rights: 'Todos los derechos reservados.',
 };
 
-const pt: Strings = {
+const pt: BaseStrings = {
   brands: 'Marcas populares',
   brandProducts: 'Códigos {name}',
   moreFrom: 'Mais códigos {name}',
@@ -418,7 +420,7 @@ const pt: Strings = {
   rights: 'Todos os direitos reservados.',
 };
 
-const fr: Strings = {
+const fr: BaseStrings = {
   brands: 'Marques populaires',
   brandProducts: 'Codes {name}',
   moreFrom: 'Autres codes {name}',
@@ -521,7 +523,7 @@ const fr: Strings = {
   rights: 'Tous droits réservés.',
 };
 
-const de: Strings = {
+const de: BaseStrings = {
   brands: 'Beliebte Marken',
   brandProducts: '{name}-Codes',
   moreFrom: 'Weitere {name}-Codes',
@@ -624,7 +626,7 @@ const de: Strings = {
   rights: 'Alle Rechte vorbehalten.',
 };
 
-const ru: Strings = {
+const ru: BaseStrings = {
   brands: 'Популярные бренды',
   brandProducts: 'Коды {name}',
   moreFrom: 'Другие коды {name}',
@@ -727,7 +729,7 @@ const ru: Strings = {
   rights: 'Все права защищены.',
 };
 
-const ar: Strings = {
+const ar: BaseStrings = {
   brands: 'علامات تجارية شائعة',
   brandProducts: 'أكواد {name}',
   moreFrom: 'المزيد من أكواد {name}',
@@ -830,7 +832,7 @@ const ar: Strings = {
   rights: 'جميع الحقوق محفوظة.',
 };
 
-const id: Strings = {
+const id: BaseStrings = {
   brands: 'Merek populer',
   brandProducts: 'Kode {name}',
   moreFrom: 'Kode {name} lainnya',
@@ -933,7 +935,7 @@ const id: Strings = {
   rights: 'Hak cipta dilindungi.',
 };
 
-const zh: Strings = {
+const zh: BaseStrings = {
   brands: '热门品牌',
   brandProducts: '{name} 兑换码',
   moreFrom: '更多 {name} 兑换码',
@@ -1036,9 +1038,15 @@ const zh: Strings = {
   rights: '保留所有权利。',
 };
 
-const STRINGS: Record<Locale, Strings> = { en, tr, es, pt, fr, de, ru, ar, id, zh };
+const STRINGS: Record<Locale, BaseStrings> = { en, tr, es, pt, fr, de, ru, ar, id, zh };
 
-export const strings = (locale: Locale): Strings => STRINGS[locale];
+// Cart / account copy: one file per language in ./account; a missing one falls back to English.
+const accountFiles = import.meta.glob<{ default: AccountStrings }>('./account/*.ts', { eager: true });
+const ACCOUNT: Partial<Record<string, AccountStrings>> = Object.fromEntries(
+  Object.entries(accountFiles).map(([path, module]) => [path.replace(/^\.\/account\/|\.ts$/g, ''), module.default]),
+);
+
+export const strings = (locale: Locale): Strings => ({ ...STRINGS[locale], ...(ACCOUNT[locale] ?? accountEn) });
 
 export const fill = (template: string, values: Record<string, string>): string =>
   template.replace(/\{(\w+)\}/g, (match, key: string) => values[key] ?? match);

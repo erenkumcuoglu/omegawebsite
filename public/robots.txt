@@ -1,5 +1,8 @@
 User-agent: *
 Disallow: /api/
 Disallow: /*/order/
+Disallow: /*/cart$
+Disallow: /*/account$
+Disallow: /*/account/
 
 Sitemap: https://omegadijital.com/sitemap.xml

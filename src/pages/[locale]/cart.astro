@@ -1,0 +1,206 @@
+---
+/** Cart and payment in one page. Per buyer: never cached, never indexed. */
+import Layout from '../../layouts/Layout.astro';
+import { formatUsd, isLocale } from '../../i18n/locales';
+import { fill, strings, type Strings } from '../../i18n/strings';
+import { catalog, MAX_QUANTITY, me, paymentOptions, type Account, type PaymentOption, type Product } from '../../lib/shop';
+import { readCart } from '../../lib/cart';
+import { readSession } from '../../lib/session';
+import { noStore } from '../../lib/http';
+import { SITE_NAME } from '../../lib/site';
+
+const { locale } = Astro.params;
+if (!isLocale(locale)) return Astro.rewrite('/404');
+const t = strings(locale);
+noStore(Astro.response.headers);
+
+const cart = readCart(Astro.cookies);
+let products: Product[] = [];
+let options: PaymentOption[] = [];
+let account: Account | null = null;
+let down = false;
+try {
+  [products, options, account] = await Promise.all([
+    catalog(),
+    paymentOptions().catch(() => []),
+    me(readSession(Astro.cookies)).catch(() => null),
+  ]);
+} catch {
+  down = true;
+}
+
+const lines = cart.map((line) => {
+  const product = products.find((p) => p.slug === line.slug);
+  return { ...line, product, available: Boolean(product?.inStock) };
+});
+const payable = lines.filter((l) => l.available);
+const total = Math.round(payable.reduce((sum, l) => sum + l.product!.price * l.quantity, 0) * 100) / 100;
+const balanceEnough = account ? account.balance >= total : false;
+
+const errorCode = Astro.url.searchParams.get('error');
+const error = errorCode ? (t[`err_${errorCode}` as keyof Strings] ?? t.err_generic) : null;
+---
+
+<Layout locale={locale} title={`${t.cartTitle} | ${SITE_NAME}`} description={t.homeDesc} path="/cart" noindex>
+  <div class="wrap page-pad">
+    <h1>{t.cartTitle}</h1>
+    {error && <p class="alert" role="alert">{error}</p>}
+    {down && <p class="empty">{t.catalogDown}</p>}
+    {
+      !down && lines.length === 0 && (
+        <div class="empty">
+          <p>{t.cartEmpty}</p>
+          <a class="btn" href={`/${locale}#catalog`}>{t.newOrder}</a>
+        </div>
+      )
+    }
+    {
+      !down && lines.length > 0 && (
+        <div class="checkout">
+          <section class="panel" aria-labelledby="cart-items">
+            <h2 id="cart-items" class="sr-only">{t.items}</h2>
+            <ul class="cart-lines">
+              {lines.map((line) => (
+                <li class:list={['cart-line', { gone: !line.available }]}>
+                  <div class="cart-line-main">
+                    {line.product ? <a href={`/${locale}/${line.slug}`}>{line.product.title}</a> : <span>{line.slug}</span>}
+                    {line.available ? (
+                      <small class="muted">
+                        {formatUsd(line.product!.price, locale)} {t.each}
+                      </small>
+                    ) : (
+                      <small class="muted">{t.lineGone}</small>
+                    )}
+                  </div>
+                  {line.available && (
+                    <form method="POST" action="/api/cart" class="cart-qty">
+                      <input type="hidden" name="action" value="set" />
+                      <input type="hidden" name="slug" value={line.slug} />
+                      <input type="hidden" name="locale" value={locale} />
+                      <div class="stepper" data-stepper data-autosubmit>
+                        <button type="button" data-step="-1" aria-label={t.decrease}>−</button>
+                        <input name="quantity" type="number" inputmode="numeric" min="1" max={MAX_QUANTITY} value={line.quantity} aria-label={`${t.quantity}: ${line.product!.title}`} />
+                        <button type="button" data-step="1" aria-label={t.increase}>+</button>
+                      </div>
+                      <noscript>
+                        <button class="copy" type="submit">OK</button>
+                      </noscript>
+                    </form>
+                  )}
+                  <strong class="cart-line-total">{line.available ? formatUsd(line.product!.price * line.quantity, locale) : '—'}</strong>
+                  <form method="POST" action="/api/cart">
+                    <input type="hidden" name="action" value="remove" />
+                    <input type="hidden" name="slug" value={line.slug} />
+                    <input type="hidden" name="locale" value={locale} />
+                    <button class="link-button" type="submit">{t.remove}</button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+            <p class="cart-total">
+              <span>{t.total}</span>
+              <strong>{formatUsd(total, locale)}</strong>
+            </p>
+            <p class="muted small">{t.cartLimits}</p>
+          </section>
+
+          <form class="panel pay-form" method="POST" action="/api/checkout">
+            <input type="hidden" name="locale" value={locale} />
+            <p hidden><label>Leave empty <input name="website" tabindex="-1" autocomplete="off" /></label></p>
+            {account ? (
+              <p class="muted small">{fill(t.signedInAs, { email: account.email })}</p>
+            ) : (
+              <label class="field">
+                <span>{t.emailLabel}</span>
+                <input name="email" type="email" required autocomplete="email" inputmode="email" maxlength="200" />
+                <small class="muted">{t.emailHint}</small>
+              </label>
+            )}
+
+            <fieldset class="networks">
+              <legend>{t.payWith}</legend>
+              <label class="network">
+                <input type="radio" name="payWith" value="crypto" checked={!account || !balanceEnough} data-pay="crypto" />
+                <span><strong>{t.payCrypto}</strong></span>
+              </label>
+              {account ? (
+                <label class:list={['network', { disabled: !balanceEnough }]}>
+                  <input type="radio" name="payWith" value="balance" disabled={!balanceEnough} checked={balanceEnough} data-pay="balance" />
+                  <span>
+                    <strong>{t.payBalance}</strong>
+                    <small>{balanceEnough ? fill(t.balanceAvailable, { amount: formatUsd(account.balance, locale) }) : `${fill(t.balanceAvailable, { amount: formatUsd(account.balance, locale) })} · ${t.balanceShort}`}</small>
+                  </span>
+                </label>
+              ) : (
+                <p class="muted small">
+                  <a href={`/${locale}/account/login`}>{t.signInForBalance}</a>
+                </p>
+              )}
+            </fieldset>
+
+            <fieldset class="networks" data-networks>
+              <legend>{t.payNetwork}</legend>
+              {options.length === 0 && <p class="alert">{t.err_unavailable}</p>}
+              {options.map((option, index) => (
+                <label class="network">
+                  <input type="radio" name="network" value={option.network} checked={index === 0} />
+                  <span>
+                    <strong>USDT · {option.network}</strong>
+                    <small>{option.label}</small>
+                  </span>
+                </label>
+              ))}
+              <small class="muted">{t.payNetworkHint}</small>
+            </fieldset>
+
+            <button class="btn btn-lg btn-block" type="submit" disabled={payable.length === 0}>
+              {t.placeOrder} · {formatUsd(total, locale)}
+            </button>
+            <p class="muted small">{t.placeOrderNote}</p>
+            <details class="faq">
+              <summary>{t.balanceRulesTitle}</summary>
+              <p>{t.balanceRules}</p>
+            </details>
+          </form>
+        </div>
+      )
+    }
+  </div>
+</Layout>
+
+<script>
+  // Steppers on the cart page save as soon as they change.
+  document.querySelectorAll<HTMLElement>('[data-stepper]').forEach((stepper) => {
+    const input = stepper.querySelector('input')!;
+    const form = stepper.closest('form');
+    const save = () => form?.requestSubmit();
+    stepper.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((button) =>
+      button.addEventListener('click', () => {
+        const next = Math.min(Number(input.max) || 20, Math.max(Number(input.min) || 1, (Number(input.value) || 1) + Number(button.dataset.step)));
+        if (String(next) !== input.value) {
+          input.value = String(next);
+          save();
+        }
+      }),
+    );
+    input.addEventListener('change', save);
+  });
+
+  // Networks only matter for a USDT payment.
+  const networks = document.querySelector<HTMLFieldSetElement>('[data-networks]');
+  const sync = () => {
+    const balance = document.querySelector<HTMLInputElement>('[data-pay="balance"]')?.checked;
+    if (networks) {
+      networks.hidden = Boolean(balance);
+      networks.disabled = Boolean(balance);
+    }
+  };
+  document.querySelectorAll('[data-pay]').forEach((radio) => radio.addEventListener('change', sync));
+  sync();
+
+  // One submit only: each one would reserve a new payment amount.
+  document.querySelector<HTMLFormElement>('form.pay-form')?.addEventListener('submit', (event) => {
+    const button = (event.currentTarget as HTMLFormElement).querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (button) setTimeout(() => (button.disabled = true));
+  });
+</script>

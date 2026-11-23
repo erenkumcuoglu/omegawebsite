@@ -1,33 +1,45 @@
 import type { APIRoute } from 'astro';
-import { DEFAULT_LOCALE, isLocale } from '../../i18n/locales';
+import { readCart, writeCart } from '../../lib/cart';
+import { EMAIL, field, localeOf } from '../../lib/form';
 import { createCheckout, isNetwork, ShopError } from '../../lib/shop';
+import { readSession, secureCookies } from '../../lib/session';
 
 /**
- * The product form posts here (works without JavaScript). We ask the Omega API for a checkout
- * with the shared token, then send the buyer to their order page. Astro's origin check rejects
- * cross-site posts.
+ * The cart page posts here (works without JavaScript). We ask the Omega API for a checkout with the
+ * shared token and, when signed in, the buyer's session; then send them to the order page.
+ * Astro's origin check rejects cross-site posts.
  */
-export const POST: APIRoute = async ({ request, redirect, clientAddress }) => {
+export const POST: APIRoute = async ({ request, cookies, url, redirect, clientAddress }) => {
   const form = await request.formData();
-  const slug = String(form.get('slug') ?? '').trim();
-  const email = String(form.get('email') ?? '').trim();
-  const network = String(form.get('network') ?? '');
-  const rawLocale = String(form.get('locale') ?? '');
-  const locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE;
-  const back = (code: string) => redirect(`/${locale}/${encodeURIComponent(slug)}?error=${code}`, 303);
+  const locale = localeOf(form);
+  const back = (code: string) => redirect(`/${locale}/cart?error=${code}`, 303);
 
-  if (!slug || slug.length > 200) return redirect(`/${locale}`, 303);
   // Honeypot: bots fill every field.
-  if (String(form.get('website') ?? '') !== '') return back('generic');
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 200) return back('invalid_email');
+  if (field(form, 'website') !== '') return back('generic');
+  const items = readCart(cookies);
+  if (items.length === 0) return back('cart_empty');
 
-  if (!isNetwork(network)) return back('network');
+  const session = readSession(cookies);
+  const payWith = field(form, 'payWith') === 'balance' ? 'balance' : 'crypto';
+  const network = field(form, 'network');
+  const email = field(form, 'email').toLowerCase();
+  if (payWith === 'balance' && !session) return back('sign_in');
+  if (payWith === 'crypto' && !isNetwork(network)) return back('network');
+  if (!session && (!EMAIL.test(email) || email.length > 200)) return back('invalid_email');
 
   try {
-    const checkout = await createCheckout({ slug, email, locale, network }, clientAddress);
-    const response = redirect(`/${locale}/order/${encodeURIComponent(checkout.id)}?t=${encodeURIComponent(checkout.token)}`, 303);
-    response.headers.set('Cache-Control', 'no-store');
-    return response;
+    const checkout = await createCheckout(
+      {
+        items,
+        locale,
+        payWith,
+        ...(payWith === 'crypto' && isNetwork(network) ? { network } : {}),
+        ...(session ? {} : { email }),
+      },
+      { ip: clientAddress, session },
+    );
+    writeCart(cookies, [], secureCookies(url));
+    return redirect(`/${locale}/order/${encodeURIComponent(checkout.id)}?t=${encodeURIComponent(checkout.token)}`, 303);
   } catch (error) {
     return back(error instanceof ShopError ? error.code : 'generic');
   }

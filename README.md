@@ -7,6 +7,14 @@ Storefront for game codes and gift cards, paid with **USDT on TRC20, ERC20 or BE
 - Each page has a canonical link, hreflang links, `x-default`, JSON-LD (Organization, FAQ, Product, Breadcrumb) and is listed in `/sitemap.xml`.
 - The catalog, prices and checkouts come from the Omega API (`/api/public/shop/*`). Only this site's server calls it, using the secret `WEB_API_TOKEN`; browsers never see the token.
 
+## Cart, accounts and balance
+
+- **Cart:** product pages add to a cart kept in the `od_cart` cookie (`slug:qty|…`, max 20 products × 20 codes). `/{locale}/cart` is the cart and the payment form in one page: guest e-mail, then USDT on any network from `GET /payment-options`, or the store balance when signed in.
+- **Sign-in:** `/{locale}/account/login` asks Omega to e-mail a link (`POST /auth/login-link`). The link opens the same page with `?token=`. The buyer presses a button (`POST /api/auth/verify`), so mail scanners cannot use up the one-time token. The session goes into the httpOnly, Secure, SameSite=Lax `od_session` cookie and is sent to Omega as `X-Customer-Session`.
+- **Account:** `/{locale}/account` shows the balance, the top-up form (only after the first delivered order), balance history and orders.
+- **Business rules (shown in every language and in the terms):** the balance can only be spent here. A top-up is a digital goods purchase and cannot be withdrawn, transferred or refunded. Top-up opens after the first delivered order. Every order is reviewed before the code is e-mailed.
+- Catalog pages are CDN-cached and the same for everyone. Nothing per buyer is rendered into them: the header cart badge reads the cookie in the browser. Cart, account and order pages are `no-store` and `noindex`.
+
 ## How buying works
 
 1. Product page (`/{locale}/{slug}`): the buyer picks a network (from `GET /payment-options`, only networks with an address) and enters an e-mail. The form posts to `/api/checkout`.
@@ -24,7 +32,10 @@ Order pages are `no-store` and `noindex`, and send `Referrer-Policy: no-referrer
 | `src/pages/[locale]/[slug].astro` | Product page and order form |
 | `src/pages/[locale]/order/[id].astro` | Payment / order status page |
 | `src/pages/[locale]/terms.astro` | Terms & privacy (EN + TR; other languages show EN) |
-| `src/pages/api/checkout.ts`, `src/pages/api/order/[id].ts` | Server endpoints that call Omega |
+| `src/pages/[locale]/cart.astro` | Cart and payment |
+| `src/pages/[locale]/account/` | Sign-in and account (balance, top-up, history, orders) |
+| `src/pages/api/` | Form endpoints: cart, checkout, topup, auth/*; order status poll |
+| `src/lib/cart.ts`, `src/lib/session.ts` | Cart and session cookies |
 | `src/pages/sitemap.xml.ts` | Sitemap with hreflang alternates |
 | `src/i18n/` | Languages and all interface copy |
 | `src/lib/shop.ts` | Omega shop API client (+ sample catalog for local preview) |

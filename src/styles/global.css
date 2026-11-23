@@ -991,7 +991,7 @@ code {
 
 @media (max-width: 820px) {
   .brand-info {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1078,4 +1078,310 @@ code {
   .brand-tiles {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+
+/* ---------- order lines ---------- */
+.lines {
+  width: 100%;
+  margin: 8px 0 0;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.lines td {
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.lines .num {
+  text-align: end;
+  white-space: nowrap;
+  padding-inline-start: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- cart controls ---------- */
+.stepper {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  width: max-content;
+}
+
+.stepper button {
+  width: 44px;
+  border: 0;
+  background: var(--bg);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.stepper button:disabled {
+  cursor: not-allowed;
+  color: var(--muted);
+}
+
+.stepper input {
+  width: 64px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 0;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.stepper input::-webkit-inner-spin-button,
+.stepper input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.buy-actions {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.btn-ghost {
+  background: #fff;
+  color: var(--brand);
+  border: 2px solid var(--brand);
+}
+
+.btn-ghost:hover {
+  background: var(--brand-soft);
+}
+
+.btn-ghost:disabled {
+  background: #fff;
+  color: var(--muted);
+  border-color: var(--line);
+}
+
+.notice-ok {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--ok-soft);
+  color: var(--ok);
+  font-size: 0.925rem;
+}
+
+.notice-ok a {
+  font-weight: 600;
+}
+
+.cart-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.cart-count {
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 20px;
+  text-align: center;
+}
+
+.cart-count:empty,
+.cart-count[hidden] {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .cart-link .label,
+  .account-link .label {
+    display: none;
+  }
+}
+
+/* ---------- cart, checkout, account ---------- */
+.checkout,
+.account-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: clamp(16px, 3vw, 28px);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .checkout,
+  .account-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cart-lines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cart-line {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-areas: 'main qty total' 'main remove remove';
+  gap: 6px 14px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.cart-line-main {
+  grid-area: main;
+  display: grid;
+  gap: 2px;
+}
+
+.cart-line-main a {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cart-qty {
+  grid-area: qty;
+}
+
+.cart-line-total {
+  grid-area: total;
+  min-width: 80px;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.cart-line > form:last-child {
+  grid-area: remove;
+  justify-self: end;
+}
+
+.cart-line.gone .cart-line-main {
+  opacity: 0.7;
+}
+
+@media (max-width: 520px) {
+  .cart-line {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 'main main' 'qty total' 'remove remove';
+  }
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: var(--bad);
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 16px 0 4px;
+  font-size: 1.1rem;
+}
+
+.cart-total strong {
+  font-size: 1.5rem;
+}
+
+.network.disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.networks[hidden] {
+  display: none;
+}
+
+.auth h1 {
+  font-size: 1.6rem;
+}
+
+.account-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.account-head h1 {
+  margin-bottom: 4px;
+}
+
+.balance {
+  margin: 0 0 20px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.order-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.order-list li > div {
+  display: grid;
+  gap: 2px;
+}
+
+.small-pill {
+  margin: 0;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+}
+
+.spaced {
+  margin-top: 28px;
+}
+
+/* Long URLs in redeem steps (e.g. Midasbuy) must wrap on phones. */
+.brand-info > *,
+.checkout > *,
+.account-grid > * {
+  min-width: 0;
+}
+
+.brand-info p,
+.redeem li,
+.faq p,
+.prose p {
+  overflow-wrap: anywhere;
 }

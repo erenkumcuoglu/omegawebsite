@@ -70,7 +70,16 @@ const year = new Date().getFullYear();
           <a href="#support">{t.navSupport}</a>
         </nav>
         <div class="header-actions">
-        {/* Account (balance) and cart links will go here when the Omega API offers them. */}
+          {/* Same markup for everyone (pages are CDN-cached): the cart count is read from the cart cookie in the browser. */}
+          <a class="cart-link account-link" href={`/${locale}/account`} aria-label={t.navAccount}>
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0-8a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 10c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Zm6 6H6v-1c0-1.3 2.5-3 6-3s6 1.7 6 3v1Z"/></svg>
+            <span class="label">{t.navAccount}</span>
+          </a>
+          <a class="cart-link" href={`/${locale}/cart`} aria-label={t.navCart}>
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM5.2 4l.6 2H21l-2.6 9H7.6L4.4 2H1v2h3.6l.6 2ZM8.4 13h8.5l1.4-5H6.4l2 5Z"/></svg>
+            <span class="label">{t.navCart}</span>
+            <span class="cart-count" data-cart-count hidden></span>
+          </a>
         <details class="lang">
           <summary aria-label={`${t.language}: ${locale.toUpperCase()}`}>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.9 6h-3a15.7 15.7 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8ZM12 4c.8 1.2 1.5 2.5 1.9 4h-3.8c.4-1.5 1.1-2.8 1.9-4ZM4.3 14a8 8 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4H4.3Zm.8 2h3a15.7 15.7 0 0 0 1.4 3.6A8 8 0 0 1 5.1 16Zm3-8h-3a8 8 0 0 1 4.4-3.6C8 5.6 7.6 6.8 8.1 8ZM12 20c-.8-1.2-1.5-2.5-1.9-4h3.8c-.4 1.5-1.1 2.8-1.9 4Zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4Zm.3 5.6c.6-1.1 1.1-2.3 1.4-3.6h3a8 8 0 0 1-4.4 3.6Zm1.7-5.6a16.5 16.5 0 0 0 0-4h3.4a8 8 0 0 1 0 4h-3.4Z"/></svg>
@@ -146,6 +155,14 @@ const year = new Date().getFullYear();
           button.disabled = false;
         }
       });
+      // Cart badge from the cart cookie ("slug:qty|slug:qty").
+      const cart = document.cookie.split('; ').find((c) => c.startsWith('od_cart='))?.slice(8) ?? '';
+      const count = cart ? cart.split('|').reduce((sum, part) => sum + (Number(part.split(':')[1]) || 0), 0) : 0;
+      const badge = document.querySelector<HTMLElement>('[data-cart-count]');
+      if (badge && count > 0) {
+        badge.textContent = String(count);
+        badge.hidden = false;
+      }
       // Close the language menu when clicking elsewhere.
       document.addEventListener('click', (event) => {
         document.querySelectorAll<HTMLDetailsElement>('details.lang[open]').forEach((menu) => {

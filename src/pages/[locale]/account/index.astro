@@ -1,0 +1,138 @@
+---
+/** The signed-in buyer: balance, top-up, balance history and orders. */
+import Layout from '../../../layouts/Layout.astro';
+import { formatUsd, isLocale, LOCALE_INFO } from '../../../i18n/locales';
+import { fill, strings, type Strings } from '../../../i18n/strings';
+import { me, paymentOptions, type Account, type PaymentOption } from '../../../lib/shop';
+import { clearSession, readSession } from '../../../lib/session';
+import { noStore } from '../../../lib/http';
+import { SITE_NAME } from '../../../lib/site';
+
+const { locale } = Astro.params;
+if (!isLocale(locale)) return Astro.rewrite('/404');
+const t = strings(locale);
+noStore(Astro.response.headers);
+
+const session = readSession(Astro.cookies);
+if (!session) return Astro.redirect(`/${locale}/account/login`, 302);
+let account: Account | null = null;
+let options: PaymentOption[] = [];
+let down = false;
+try {
+  [account, options] = await Promise.all([me(session), paymentOptions().catch(() => [])]);
+} catch {
+  down = true;
+}
+if (!down && !account) {
+  // The session expired or was revoked.
+  clearSession(Astro.cookies);
+  return Astro.redirect(`/${locale}/account/login`, 302);
+}
+if (down) Astro.response.status = 503;
+
+const date = (iso: string) => new Intl.DateTimeFormat(LOCALE_INFO[locale].intl, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(iso));
+const signed = (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : ''}${formatUsd(Math.abs(n), locale)}`;
+const statusOf = (o: Account['orders'][number]) =>
+  o.kind === 'TOPUP' && o.status === 'APPROVED' ? t.status_CREDITED : (t[`status_${o.status}` as keyof Strings] as string);
+const errorCode = Astro.url.searchParams.get('error');
+const error = errorCode ? (t[`err_${errorCode}` as keyof Strings] ?? t.err_generic) : null;
+---
+
+<Layout locale={locale} title={`${t.accountTitle} | ${SITE_NAME}`} description={t.homeDesc} path="/account" noindex>
+  <div class="wrap page-pad">
+    <div class="account-head">
+      <div>
+        <h1>{t.accountTitle}</h1>
+        {account && <p class="muted">{account.email}</p>}
+      </div>
+      <form method="POST" action="/api/auth/logout">
+        <input type="hidden" name="locale" value={locale} />
+        <button class="btn btn-ghost" type="submit">{t.signOut}</button>
+      </form>
+    </div>
+    {down && <p class="empty">{t.catalogDown}</p>}
+    {error && <p class="alert" role="alert">{error}</p>}
+    {
+      account && (
+        <div class="account-grid">
+          <section class="panel">
+            <h2>{t.balance}</h2>
+            <p class="balance">{formatUsd(account.balance, locale)}</p>
+            <h3>{t.topupTitle}</h3>
+            {account.topup.allowed ? (
+              <form method="POST" action="/api/topup">
+                <input type="hidden" name="locale" value={locale} />
+                <label class="field">
+                  <span>{t.topupAmount}</span>
+                  <input name="amount" type="number" inputmode="decimal" step="0.01" min={account.topup.min} max={account.topup.max} required />
+                  <small class="muted">{fill(t.topupRange, { min: String(account.topup.min), max: String(account.topup.max) })}</small>
+                </label>
+                <fieldset class="networks">
+                  <legend>{t.payNetwork}</legend>
+                  {options.length === 0 && <p class="alert">{t.err_unavailable}</p>}
+                  {options.map((option, index) => (
+                    <label class="network">
+                      <input type="radio" name="network" value={option.network} checked={index === 0} />
+                      <span>
+                        <strong>USDT · {option.network}</strong>
+                        <small>{option.label}</small>
+                      </span>
+                    </label>
+                  ))}
+                </fieldset>
+                <button class="btn btn-block" type="submit" disabled={options.length === 0}>{t.topupButton}</button>
+              </form>
+            ) : (
+              <p class="alert">{t.topupLocked}</p>
+            )}
+            <details class="faq">
+              <summary>{t.balanceRulesTitle}</summary>
+              <p>{t.balanceRules}</p>
+            </details>
+          </section>
+
+          <section class="panel">
+            <h2>{t.ordersTitle}</h2>
+            {account.orders.length === 0 && <p class="muted">{t.noOrders}</p>}
+            {account.orders.length > 0 && (
+              <ul class="order-list">
+                {account.orders.map((o) => (
+                  <li>
+                    <div>
+                      <strong>{o.kind === 'TOPUP' ? t.topupOrderTitle : o.title}</strong>
+                      <small class="muted">
+                        {o.number} · {date(o.createdAt)} · {formatUsd(o.total, locale)}
+                      </small>
+                    </div>
+                    <span class="status-pill small-pill">{statusOf(o)}</span>
+                    <a href={`/${locale}/order/${encodeURIComponent(o.id)}?t=${encodeURIComponent(o.token)}`}>{t.view}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <h2 class="spaced">{t.history}</h2>
+            {account.entries.length === 0 && <p class="muted">{t.noHistory}</p>}
+            {account.entries.length > 0 && (
+              <table class="lines">
+                <tbody>
+                  {account.entries.map((e) => (
+                    <tr>
+                      <td>
+                        {t[`entry_${e.kind}` as keyof Strings]}
+                        {e.orderNumber && <small class="muted"> · {e.orderNumber}</small>}
+                        <br />
+                        <small class="muted">{date(e.createdAt)}</small>
+                      </td>
+                      <td class="num">{signed(e.amount)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+        </div>
+      )
+    }
+  </div>
+</Layout>

@@ -1,0 +1,68 @@
+---
+/**
+ * Sign-in by e-mail link. The link from the e-mail opens this page with ?token=…; the buyer presses
+ * a button (POST) to finish, so mail scanners that open links cannot use up the one-time token.
+ */
+import Layout from '../../../layouts/Layout.astro';
+import { isLocale } from '../../../i18n/locales';
+import { strings, type Strings } from '../../../i18n/strings';
+import { isMock } from '../../../lib/shop';
+import { readSession } from '../../../lib/session';
+import { noStore } from '../../../lib/http';
+import { SITE_NAME } from '../../../lib/site';
+
+const { locale } = Astro.params;
+if (!isLocale(locale)) return Astro.rewrite('/404');
+const t = strings(locale);
+noStore(Astro.response.headers);
+
+const params = Astro.url.searchParams;
+const token = params.get('token') ?? '';
+const sent = params.get('sent') === '1';
+const devLink = isMock() ? params.get('dev') : null;
+const errorCode = params.get('error');
+const error = errorCode ? (t[`err_${errorCode}` as keyof Strings] ?? t.err_generic) : null;
+// Already signed in and not finishing a new link: go to the account.
+if (!token && !sent && !error && readSession(Astro.cookies)) return Astro.redirect(`/${locale}/account`, 302);
+---
+
+<Layout locale={locale} title={`${t.loginTitle} | ${SITE_NAME}`} description={t.loginText} path="/account/login" noindex>
+  <section class="wrap narrow page-pad">
+    <div class="panel auth">
+      {
+        token ? (
+          <form method="POST" action="/api/auth/verify">
+            <h1>{t.confirmTitle}</h1>
+            <p class="muted">{t.confirmText}</p>
+            <input type="hidden" name="token" value={token} />
+            <input type="hidden" name="locale" value={locale} />
+            <button class="btn btn-lg btn-block" type="submit">{t.confirmButton}</button>
+          </form>
+        ) : sent ? (
+          <div>
+            <h1>{t.sentTitle}</h1>
+            <p class="muted">{t.sentText}</p>
+            {devLink && (
+              <p class="alert">
+                Local preview (no e-mail sent): <a href={devLink}>{devLink}</a>
+              </p>
+            )}
+          </div>
+        ) : (
+          <form method="POST" action="/api/auth/login-link">
+            <h1>{t.loginTitle}</h1>
+            <p class="muted">{t.loginText}</p>
+            {error && <p class="alert" role="alert">{error}</p>}
+            <input type="hidden" name="locale" value={locale} />
+            <p hidden><label>Leave empty <input name="website" tabindex="-1" autocomplete="off" /></label></p>
+            <label class="field">
+              <span>{t.emailLabel}</span>
+              <input name="email" type="email" required autocomplete="email" inputmode="email" maxlength="200" />
+            </label>
+            <button class="btn btn-lg btn-block" type="submit">{t.sendLink}</button>
+          </form>
+        )
+      }
+    </div>
+  </section>
+</Layout>
