@@ -1,0 +1,143 @@
+---
+/**
+ * Brand landing page. Public URL is /{locale}/{brand} ([slug].astro rewrites here);
+ * /{locale}/brand/{brand} itself redirects there so only one URL exists.
+ */
+import Layout from '../../../layouts/Layout.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import { isLocale, LOCALE_INFO } from '../../../i18n/locales';
+import { fill, strings } from '../../../i18n/strings';
+import { catalog, type Product } from '../../../lib/shop';
+import { cacheCatalog } from '../../../lib/http';
+import { brandCopy, brandOf, brandPath, brandPaths, BRAND_KEYS, isBrandKey } from '../../../content/brands';
+import { SITE_NAME, SITE_URL } from '../../../lib/site';
+
+const { locale, brand } = Astro.params;
+if (!isLocale(locale) || !isBrandKey(brand)) return Astro.rewrite('/404');
+if (Astro.originPathname.includes('/brand/')) return Astro.redirect(`/${locale}${brandPath(brand, locale)}`, 301);
+const t = strings(locale);
+const { copy, lang } = brandCopy(brand, locale);
+const fallback = lang !== locale;
+
+let products: Product[] | null = null;
+try {
+  products = (await catalog()).filter((p) => brandOf(p) === brand).sort((a, b) => a.price - b.price || a.title.localeCompare(b.title));
+  cacheCatalog(Astro.response.headers);
+} catch {
+  Astro.response.status = 503;
+  Astro.response.headers.set('Cache-Control', 'no-store');
+}
+const pageUrl = `${SITE_URL}/${locale}${brandPath(brand, locale)}`;
+
+const jsonLd: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: copy.h1,
+    description: copy.description,
+    url: pageUrl,
+    inLanguage: LOCALE_INFO[locale].hreflang,
+    ...(products && products.length > 0
+      ? {
+          mainEntity: {
+            '@type': 'ItemList',
+            itemListElement: products.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE_URL}/${locale}/${p.slug}`, name: p.title })),
+          },
+        }
+      : {}),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.home, item: `${SITE_URL}/${locale}` },
+      { '@type': 'ListItem', position: 2, name: copy.name, item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: copy.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+const others = BRAND_KEYS.filter((key) => key !== brand);
+---
+
+<Layout locale={locale} title={copy.title} description={copy.description} path={brandPath(brand, locale)} paths={brandPaths(brand)} jsonLd={jsonLd}>
+  <div class="wrap page-pad">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href={`/${locale}`}>{t.home}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{copy.name}</span>
+    </nav>
+
+    <div lang={fallback ? 'en' : undefined} dir={fallback ? 'ltr' : undefined}>
+      <header class="brand-head">
+        <h1>{copy.h1}</h1>
+        {copy.intro.map((p) => <p class="lead">{p}</p>)}
+      </header>
+    </div>
+
+    <section class="section-tight" aria-labelledby="brand-products">
+      <h2 id="brand-products">{fill(t.brandProducts, { name: copy.name })}</h2>
+      {products === null && <p class="empty">{t.catalogDown}</p>}
+      {products !== null && products.length === 0 && <p class="empty">{fill(t.noBrandProducts, { name: copy.name })}</p>}
+      {
+        products && products.length > 0 && (
+          <div class="grid">
+            {products.map((item) => (
+              <ProductCard item={item} locale={locale} />
+            ))}
+          </div>
+        )
+      }
+    </section>
+
+    <div class="brand-info" lang={fallback ? 'en' : undefined} dir={fallback ? 'ltr' : undefined}>
+      <section class="panel">
+        <h2>{copy.regionTitle}</h2>
+        {copy.region.map((p) => <p>{p}</p>)}
+      </section>
+      <section class="panel">
+        <h2>{copy.redeemTitle}</h2>
+        <ol class="redeem">
+          {copy.redeemSteps.map((step) => <li>{step}</li>)}
+        </ol>
+      </section>
+    </div>
+
+    <section class="section-tight">
+      <h2>{t.payTitle}</h2>
+      <ol class="steps">
+        <li><strong>{t.how1Title}</strong><span>{t.how1Text}</span></li>
+        <li><strong>{t.how2Title}</strong><span>{t.how2Text}</span></li>
+        <li><strong>{t.how3Title}</strong><span>{t.how3Text}</span></li>
+      </ol>
+    </section>
+
+    <section class="section-tight narrow" lang={fallback ? 'en' : undefined} dir={fallback ? 'ltr' : undefined}>
+      <h2>{t.faqTitle}</h2>
+      {
+        copy.faq.map(([q, a]) => (
+          <details class="faq">
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        ))
+      }
+    </section>
+
+    <nav class="section-tight" aria-label={t.brands}>
+      <h2>{t.brands}</h2>
+      <ul class="brand-links">
+        {
+          others.map((key) => (
+            <li>
+              <a href={`/${locale}${brandPath(key, locale)}`}>{brandCopy(key, locale).copy.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</Layout>

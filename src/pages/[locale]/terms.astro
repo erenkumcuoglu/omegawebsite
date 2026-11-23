@@ -30,9 +30,12 @@ const TEXT = {
 } as const;
 const lang = locale === 'tr' ? 'tr' : 'en';
 const sections = TEXT[lang];
+// Only English and Turkish have their own text: other languages show English and stay out of search.
+const translated = lang === locale;
+const description = sections.map(([, body]) => body).join(' ').slice(0, 155).replace(/\s+\S*$/, '') + '…';
 ---
 
-<Layout locale={locale} title={`${t.terms} | ${SITE_NAME}`} description={t.homeDesc} path="/terms">
+<Layout locale={locale} title={`${t.terms} | ${SITE_NAME}`} description={description} path="/terms" noindex={!translated} locales={['en', 'tr']}>
   <article class="wrap narrow page-pad prose">
     <h1>{t.terms}</h1>
     <div lang={lang === locale ? undefined : 'en'} dir={lang === locale ? undefined : 'ltr'}>

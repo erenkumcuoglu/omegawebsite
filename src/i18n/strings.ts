@@ -5,6 +5,13 @@ import type { Locale } from './locales';
  * Product names come from the Omega API as they are.
  */
 const en = {
+  brands: 'Popular brands',
+  brandProducts: '{name} codes',
+  moreFrom: 'More {name} codes',
+  allOf: 'All {name} codes',
+  noBrandProducts: 'No {name} codes are on sale right now. Please check back soon.',
+  payTitle: 'How paying with USDT works',
+  redeemHint: 'How to redeem',
   err_network: 'This payment network is not available right now. Please choose another one.',
   feeText: 'Exchanges deduct a withdrawal fee. Add that fee on top so that exactly {amount} USDT arrives at our address. If a different amount arrives, the payment is not matched automatically and your order waits for a manual check.',
   feeTitle: 'The exact amount must arrive',
@@ -103,6 +110,13 @@ const en = {
 export type Strings = typeof en;
 
 const tr: Strings = {
+  brands: 'Popüler markalar',
+  brandProducts: '{name} kodları',
+  moreFrom: 'Diğer {name} kodları',
+  allOf: 'Tüm {name} kodları',
+  noBrandProducts: 'Şu anda satışta {name} kodu yok. Lütfen daha sonra tekrar bakın.',
+  payTitle: 'USDT ile ödeme nasıl çalışır',
+  redeemHint: 'Nasıl yüklenir',
   err_network: 'Bu ödeme ağı şu anda kullanılamıyor. Lütfen başka bir ağ seçin.',
   feeText: 'Borsalar çekim ücreti keser. Adresimize tam olarak {amount} USDT ulaşması için bu ücreti tutarın üstüne ekleyin. Farklı bir tutar ulaşırsa ödeme otomatik eşleşmez ve siparişiniz manuel kontrol için bekler.',
   feeTitle: 'Tam tutar adresimize ulaşmalı',
@@ -199,6 +213,13 @@ const tr: Strings = {
 };
 
 const es: Strings = {
+  brands: 'Marcas populares',
+  brandProducts: 'Códigos de {name}',
+  moreFrom: 'Más códigos de {name}',
+  allOf: 'Todos los códigos de {name}',
+  noBrandProducts: 'Ahora mismo no hay códigos de {name} a la venta. Vuelve pronto.',
+  payTitle: 'Cómo funciona el pago con USDT',
+  redeemHint: 'Cómo canjear',
   err_network: 'Esta red de pago no está disponible ahora. Elige otra.',
   feeText: 'Los exchanges descuentan una comisión de retiro. Súmala al importe para que lleguen exactamente {amount} USDT a nuestra dirección. Si llega otro importe, el pago no se asocia automáticamente y tu pedido queda pendiente de revisión manual.',
   feeTitle: 'Debe llegar el importe exacto',
@@ -295,6 +316,13 @@ const es: Strings = {
 };
 
 const pt: Strings = {
+  brands: 'Marcas populares',
+  brandProducts: 'Códigos {name}',
+  moreFrom: 'Mais códigos {name}',
+  allOf: 'Todos os códigos {name}',
+  noBrandProducts: 'No momento não há códigos {name} à venda. Volte em breve.',
+  payTitle: 'Como funciona o pagamento com USDT',
+  redeemHint: 'Como resgatar',
   err_network: 'Esta rede de pagamento não está disponível agora. Escolha outra.',
   feeText: 'As corretoras descontam uma taxa de saque. Some essa taxa ao valor para que cheguem exatamente {amount} USDT ao nosso endereço. Se chegar outro valor, o pagamento não é identificado automaticamente e o pedido aguarda verificação manual.',
   feeTitle: 'O valor exato precisa chegar',
@@ -391,6 +419,13 @@ const pt: Strings = {
 };
 
 const fr: Strings = {
+  brands: 'Marques populaires',
+  brandProducts: 'Codes {name}',
+  moreFrom: 'Autres codes {name}',
+  allOf: 'Tous les codes {name}',
+  noBrandProducts: 'Aucun code {name} n’est en vente pour le moment. Revenez bientôt.',
+  payTitle: 'Comment fonctionne le paiement en USDT',
+  redeemHint: 'Comment l’utiliser',
   err_network: 'Ce réseau de paiement n’est pas disponible pour le moment. Choisissez-en un autre.',
   feeText: 'Les plateformes d’échange prélèvent des frais de retrait. Ajoutez-les au montant pour que exactement {amount} USDT arrivent à notre adresse. Si un autre montant arrive, le paiement n’est pas associé automatiquement et votre commande attend une vérification manuelle.',
   feeTitle: 'Le montant exact doit arriver',
@@ -487,6 +522,13 @@ const fr: Strings = {
 };
 
 const de: Strings = {
+  brands: 'Beliebte Marken',
+  brandProducts: '{name}-Codes',
+  moreFrom: 'Weitere {name}-Codes',
+  allOf: 'Alle {name}-Codes',
+  noBrandProducts: 'Gerade sind keine {name}-Codes im Angebot. Schau bald wieder vorbei.',
+  payTitle: 'So funktioniert die Zahlung mit USDT',
+  redeemHint: 'So löst du ein',
   err_network: 'Dieses Zahlungsnetzwerk ist gerade nicht verfügbar. Bitte wähle ein anderes.',
   feeText: 'Börsen ziehen eine Auszahlungsgebühr ab. Rechne diese Gebühr oben drauf, damit genau {amount} USDT bei unserer Adresse ankommen. Kommt ein anderer Betrag an, wird die Zahlung nicht automatisch zugeordnet und deine Bestellung wartet auf eine manuelle Prüfung.',
   feeTitle: 'Der genaue Betrag muss ankommen',
@@ -583,6 +625,13 @@ const de: Strings = {
 };
 
 const ru: Strings = {
+  brands: 'Популярные бренды',
+  brandProducts: 'Коды {name}',
+  moreFrom: 'Другие коды {name}',
+  allOf: 'Все коды {name}',
+  noBrandProducts: 'Сейчас кодов {name} нет в продаже. Загляните чуть позже.',
+  payTitle: 'Как работает оплата в USDT',
+  redeemHint: 'Как активировать',
   err_network: 'Эта сеть оплаты сейчас недоступна. Выберите другую.',
   feeText: 'Биржи удерживают комиссию за вывод. Добавьте её сверху, чтобы на наш адрес пришло ровно {amount} USDT. Если придёт другая сумма, платёж не сопоставится автоматически, и заказ будет ждать ручной проверки.',
   feeTitle: 'Должна прийти точная сумма',
@@ -679,6 +728,13 @@ const ru: Strings = {
 };
 
 const ar: Strings = {
+  brands: 'علامات تجارية شائعة',
+  brandProducts: 'أكواد {name}',
+  moreFrom: 'المزيد من أكواد {name}',
+  allOf: 'كل أكواد {name}',
+  noBrandProducts: 'لا تتوفر أكواد {name} للبيع حاليًا. يرجى العودة قريبًا.',
+  payTitle: 'كيف يعمل الدفع عبر USDT',
+  redeemHint: 'طريقة الاستخدام',
   err_network: 'شبكة الدفع هذه غير متاحة الآن. يرجى اختيار شبكة أخرى.',
   feeText: 'تخصم منصات التداول رسوم سحب. أضف هذه الرسوم إلى المبلغ حتى يصل إلى عنواننا {amount} USDT بالضبط. إذا وصل مبلغ مختلف، فلن تتم مطابقة الدفعة تلقائيًا وسينتظر طلبك المراجعة اليدوية.',
   feeTitle: 'يجب أن يصل المبلغ الدقيق',
@@ -775,6 +831,13 @@ const ar: Strings = {
 };
 
 const id: Strings = {
+  brands: 'Merek populer',
+  brandProducts: 'Kode {name}',
+  moreFrom: 'Kode {name} lainnya',
+  allOf: 'Semua kode {name}',
+  noBrandProducts: 'Saat ini belum ada kode {name} yang dijual. Silakan kembali nanti.',
+  payTitle: 'Cara bayar dengan USDT',
+  redeemHint: 'Cara redeem',
   err_network: 'Jaringan pembayaran ini sedang tidak tersedia. Silakan pilih yang lain.',
   feeText: 'Exchange memotong biaya penarikan. Tambahkan biaya itu di atas jumlahnya agar tepat {amount} USDT sampai di alamat kami. Jika jumlah yang sampai berbeda, pembayaran tidak cocok otomatis dan pesanan Anda menunggu pemeriksaan manual.',
   feeTitle: 'Jumlah yang tepat harus sampai',
@@ -871,6 +934,13 @@ const id: Strings = {
 };
 
 const zh: Strings = {
+  brands: '热门品牌',
+  brandProducts: '{name} 兑换码',
+  moreFrom: '更多 {name} 兑换码',
+  allOf: '全部 {name} 兑换码',
+  noBrandProducts: '目前暂无在售的 {name} 兑换码，请稍后再来。',
+  payTitle: 'USDT 付款流程',
+  redeemHint: '兑换方法',
   err_network: '该付款网络暂不可用，请选择其他网络。',
   feeText: '交易所会扣除提币手续费。请在金额之上加上该手续费，确保我们的地址准确收到 {amount} USDT。如到账金额不同，付款将无法自动匹配，订单需等待人工核对。',
   feeTitle: '到账金额必须准确',

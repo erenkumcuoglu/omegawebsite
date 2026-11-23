@@ -3,18 +3,26 @@ import Layout from '../../layouts/Layout.astro';
 import Tile from '../../components/Tile.astro';
 import { formatUsd, isLocale } from '../../i18n/locales';
 import { fill, strings, type Strings } from '../../i18n/strings';
-import { paymentOptions, product as loadProduct, type PaymentOption, type Product } from '../../lib/shop';
+import ProductCard from '../../components/ProductCard.astro';
+import { catalog, paymentOptions, type PaymentOption, type Product } from '../../lib/shop';
+import { brandCopy, brandOf, brandPath, findBrand } from '../../content/brands';
 import { cacheCatalog } from '../../lib/http';
 import { SITE_NAME, SITE_URL } from '../../lib/site';
 
 const { locale, slug } = Astro.params;
 if (!isLocale(locale) || !slug) return Astro.rewrite('/404');
+// Brand landing pages share this URL shape with localized slugs: /tr/steam-cuzdan-kodu, /de/steam-guthaben, ...
+const brandPage = findBrand(locale, slug);
+if (brandPage?.exact) return Astro.rewrite(`/${locale}/brand/${brandPage.key}`);
+if (brandPage) return Astro.redirect(`/${locale}${brandPath(brandPage.key, locale)}`, 301);
 const t = strings(locale);
 
 let item: Product | null;
+let all: Product[] = [];
 let options: PaymentOption[] = [];
 try {
-  [item, options] = await Promise.all([loadProduct(slug), paymentOptions().catch(() => [])]);
+  [all, options] = await Promise.all([catalog(), paymentOptions().catch(() => [])]);
+  item = all.find((p) => p.slug === slug) ?? null;
 } catch {
   Astro.response.status = 503;
   Astro.response.headers.set('Cache-Control', 'no-store');
@@ -33,6 +41,10 @@ const buyable = Boolean(item?.inStock && options.length > 0);
 const errorKey = `err_${errorCode}` as keyof Strings;
 const error = errorCode ? (t[errorKey] ?? t.err_generic) : null;
 
+const brand = item ? brandOf(item) : null;
+const brandInfo = brand ? brandCopy(brand, locale) : null;
+const related = item && brand ? all.filter((p) => p.slug !== item.slug && brandOf(p) === brand).slice(0, 8) : [];
+
 const title = item ? fill(t.productTitle, { title: item.title }) : `${missing ? t.notFound : t.catalogDown} | ${SITE_NAME}`;
 const description = item ? fill(t.productDesc, { title: item.title }) : missing ? t.notFoundText : t.catalogDown;
 const jsonLd = item
@@ -41,7 +53,8 @@ const jsonLd = item
         '@context': 'https://schema.org',
         '@type': 'Product',
         name: item.title,
-        ...(item.family ? { brand: { '@type': 'Brand', name: item.family } } : {}),
+        ...(item.family || brandInfo ? { brand: { '@type': 'Brand', name: item.family ?? brandInfo!.copy.name } } : {}),
+        category: 'Digital gift cards',
         sku: item.slug,
         description,
         offers: {
@@ -58,7 +71,8 @@ const jsonLd = item
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: t.home, item: `${SITE_URL}/${locale}` },
-          { '@type': 'ListItem', position: 2, name: item.title, item: `${SITE_URL}/${locale}/${item.slug}` },
+          ...(brand && brandInfo ? [{ '@type': 'ListItem', position: 2, name: brandInfo.copy.name, item: `${SITE_URL}/${locale}${brandPath(brand, locale)}` }] : []),
+          { '@type': 'ListItem', position: brand ? 3 : 2, name: item.title, item: `${SITE_URL}/${locale}/${item.slug}` },
         ],
       },
     ]
@@ -81,6 +95,12 @@ const jsonLd = item
         <nav class="crumbs" aria-label="Breadcrumb">
           <a href={`/${locale}`}>{t.home}</a>
           <span aria-hidden="true">/</span>
+          {brand && brandInfo && (
+            <>
+              <a href={`/${locale}${brandPath(brand, locale)}`}>{brandInfo.copy.name}</a>
+              <span aria-hidden="true">/</span>
+            </>
+          )}
           <span aria-current="page">{item.title}</span>
         </nav>
         <div class="product">
@@ -134,6 +154,37 @@ const jsonLd = item
             </ol>
           </form>
         </div>
+
+        {brand && brandInfo && (
+          <div class="brand-info" lang={brandInfo.lang !== locale ? 'en' : undefined} dir={brandInfo.lang !== locale ? 'ltr' : undefined}>
+            <section class="panel">
+              <h2>{brandInfo.copy.regionTitle}</h2>
+              {brandInfo.copy.region.map((p) => <p>{p}</p>)}
+            </section>
+            <section class="panel">
+              <h2>{brandInfo.copy.redeemTitle}</h2>
+              <ol class="redeem">
+                {brandInfo.copy.redeemSteps.map((step) => <li>{step}</li>)}
+              </ol>
+            </section>
+          </div>
+        )}
+
+        {brand && brandInfo && (
+          <section class="section-tight">
+            <div class="section-head">
+              <h2>{fill(t.moreFrom, { name: brandInfo.copy.name })}</h2>
+              <a href={`/${locale}${brandPath(brand, locale)}`}>{fill(t.allOf, { name: brandInfo.copy.name })} →</a>
+            </div>
+            {related.length > 0 && (
+              <div class="grid">
+                {related.map((p) => (
+                  <ProductCard item={p} locale={locale} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </div>
     )
   }

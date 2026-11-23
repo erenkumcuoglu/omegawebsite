@@ -9,7 +9,8 @@ export default defineConfig({
   output: 'server',
   // No edge functions here; their local emulator needs Deno, so keep it off in `astro dev`.
   adapter: netlify({ devFeatures: { environmentVariables: false, images: true, edgeFunctions: false } }),
-  trailingSlash: 'never',
+  // 'ignore' so src/middleware.ts can 301 /page/ to /page (with 'never' Astro answers 404 first).
+  trailingSlash: 'ignore',
   build: { format: 'file' },
   compressHTML: true,
   env: {

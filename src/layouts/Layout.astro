@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { LOCALES, LOCALE_INFO, DEFAULT_LOCALE, type Locale } from '../i18n/locales';
 import { strings } from '../i18n/strings';
 import { SITE_NAME, SITE_URL, SUPPORT_EMAIL } from '../lib/site';
+import { BRAND_KEYS, brandCopy, brandPath } from '../content/brands';
 
 interface Props {
   locale: Locale;
@@ -13,12 +14,17 @@ interface Props {
   /** Pages per buyer (orders) or errors: kept out of search and without language links. */
   noindex?: boolean;
   jsonLd?: Record<string, unknown>[];
+  /** Languages this page really exists in (hreflang); default all. */
+  locales?: readonly Locale[];
+  /** Per-language path when it differs by language (brand pages with localized slugs). */
+  paths?: Partial<Record<Locale, string>>;
 }
 
-const { locale, title, description, path, noindex = false, jsonLd = [] } = Astro.props;
+const { locale, title, description, path, noindex = false, jsonLd = [], locales = LOCALES, paths = {} } = Astro.props;
 const t = strings(locale);
 const info = LOCALE_INFO[locale];
-const urlFor = (l: Locale) => `${SITE_URL}/${l}${path}`;
+const pathFor = (l: Locale) => paths[l] ?? path;
+const urlFor = (l: Locale) => `${SITE_URL}/${l}${pathFor(l)}`;
 const year = new Date().getFullYear();
 ---
 
@@ -29,13 +35,13 @@ const year = new Date().getFullYear();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {noindex && <meta name="robots" content="noindex, follow" />}
     {
       !noindex && (
         <>
           <link rel="canonical" href={urlFor(locale)} />
-          {LOCALES.map((l) => <link rel="alternate" hreflang={LOCALE_INFO[l].hreflang} href={urlFor(l)} />)}
-          <link rel="alternate" hreflang="x-default" href={urlFor(DEFAULT_LOCALE)} />
+          {locales.map((l) => <link rel="alternate" hreflang={LOCALE_INFO[l].hreflang} href={urlFor(l)} />)}
+          {locales.includes(DEFAULT_LOCALE) && <link rel="alternate" hreflang="x-default" href={urlFor(DEFAULT_LOCALE)} />}
         </>
       )
     }
@@ -63,8 +69,10 @@ const year = new Date().getFullYear();
           <a href={`/${locale}#faq`}>{t.navFaq}</a>
           <a href="#support">{t.navSupport}</a>
         </nav>
+        <div class="header-actions">
+        {/* Account (balance) and cart links will go here when the Omega API offers them. */}
         <details class="lang">
-          <summary aria-label={t.language}>
+          <summary aria-label={`${t.language}: ${locale.toUpperCase()}`}>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.9 6h-3a15.7 15.7 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8ZM12 4c.8 1.2 1.5 2.5 1.9 4h-3.8c.4-1.5 1.1-2.8 1.9-4ZM4.3 14a8 8 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4H4.3Zm.8 2h3a15.7 15.7 0 0 0 1.4 3.6A8 8 0 0 1 5.1 16Zm3-8h-3a8 8 0 0 1 4.4-3.6C8 5.6 7.6 6.8 8.1 8ZM12 20c-.8-1.2-1.5-2.5-1.9-4h3.8c-.4 1.5-1.1 2.8-1.9 4Zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4Zm.3 5.6c.6-1.1 1.1-2.3 1.4-3.6h3a8 8 0 0 1-4.4 3.6Zm1.7-5.6a16.5 16.5 0 0 0 0-4h3.4a8 8 0 0 1 0 4h-3.4Z"/></svg>
             <span>{locale.toUpperCase()}</span>
           </summary>
@@ -72,7 +80,7 @@ const year = new Date().getFullYear();
             {
               LOCALES.map((l) => (
                 <li>
-                  <a href={noindex ? `/${l}` : `/${l}${path}`} hreflang={LOCALE_INFO[l].hreflang} lang={LOCALE_INFO[l].hreflang} aria-current={l === locale ? 'true' : undefined}>
+                  <a href={noindex ? `/${l}` : `/${l}${pathFor(l)}`} hreflang={LOCALE_INFO[l].hreflang} lang={LOCALE_INFO[l].hreflang} aria-current={l === locale ? 'true' : undefined}>
                     {LOCALE_INFO[l].name}
                   </a>
                 </li>
@@ -80,6 +88,7 @@ const year = new Date().getFullYear();
             }
           </ul>
         </details>
+        </div>
       </div>
     </header>
 
@@ -94,6 +103,14 @@ const year = new Date().getFullYear();
           <p class="muted">{t.footerAbout}</p>
           <p><a href={`/${locale}/terms`}>{t.terms}</a> · <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
         </div>
+        <nav aria-label={t.brands}>
+          <h2 class="footer-title">{t.brands}</h2>
+          <ul class="footer-links">
+            {BRAND_KEYS.map((key) => (
+              <li><a href={`/${locale}${brandPath(key, locale)}`}>{brandCopy(key, locale).copy.name}</a></li>
+            ))}
+          </ul>
+        </nav>
         <form id="support" class="support" name="support" method="POST" action="/__forms.html" data-sent={t.supportSent} data-failed={t.supportFailed}>
           <h2>{t.supportTitle}</h2>
           <p class="muted">{t.supportText}</p>

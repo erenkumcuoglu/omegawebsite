@@ -6,6 +6,8 @@ import { strings } from '../../i18n/strings';
 import { catalog, groupByFamily, type Product } from '../../lib/shop';
 import { cacheCatalog } from '../../lib/http';
 import { SITE_NAME, SITE_URL, SUPPORT_EMAIL } from '../../lib/site';
+import { BRAND_KEYS, brandCopy, brandPath } from '../../content/brands';
+import Tile from '../../components/Tile.astro';
 
 const { locale } = Astro.params;
 if (!isLocale(locale)) return Astro.rewrite('/404');
@@ -54,6 +56,25 @@ const jsonLd = [
       </ul>
     </div>
   </section>
+
+  <nav class="wrap section-tight" aria-labelledby="brands-title">
+    <h2 id="brands-title">{t.brands}</h2>
+    <ul class="brand-tiles">
+      {
+        BRAND_KEYS.map((key) => {
+          const name = brandCopy(key, locale).copy.name;
+          return (
+            <li>
+              <a href={`/${locale}${brandPath(key, locale)}`}>
+                <Tile name={name} />
+                <span>{name}</span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
 
   <section id="catalog" class="wrap section">
     <div class="section-head">
