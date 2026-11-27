@@ -5,11 +5,11 @@ const zh: BrandSet = {
   steam: {
     name: 'Steam 钱包',
     title: 'Steam 充值卡 USDT 购买 | Boostipay',
-    description: '用 USDT（TRC20、ERC20、BEP20、Solana 或 TON）购买 Steam 充值卡（Steam 钱包充值码）。请选择与您 Steam 钱包相同的币种，充值码通过电子邮件发送。',
+    description: '用 USDT（TRC20、ERC20 或 BEP20）购买 Steam 充值卡（Steam 钱包充值码）。请选择与您 Steam 钱包相同的币种，充值码通过电子邮件发送。',
     h1: 'Steam 钱包充值码，USDT 支付',
     intro: [
       'Steam 钱包充值码可为您的 Steam 账户充值，余额可用于购买游戏、DLC、游戏内物品以及在社区市场消费。',
-      '支持通过 TRC20、ERC20、BEP20、Solana 或 TON 网络以 USDT 付款。经过简短的人工审核后，我们会将充值码发送到您的邮箱。无需在本站注册账户。',
+      '支持通过 TRC20、ERC20 或 BEP20 网络以 USDT 付款。经过简短的人工审核后，我们会将充值码发送到您的邮箱。无需在本站注册账户。',
     ],
     regionTitle: '应该购买哪种 Steam 充值卡？',
     region: [
@@ -32,11 +32,11 @@ const zh: BrandSet = {
   playstation: {
     name: 'PlayStation Store',
     title: 'PSN 点卡（PlayStation Store）USDT 购买 | Boostipay',
-    description: '用 USDT（TRC20、ERC20、BEP20、Solana 或 TON）购买 PSN 点卡（PlayStation Store）。点卡国家须与 PSN 账户国家一致，兑换码通过邮件发送。',
+    description: '用 USDT（TRC20、ERC20 或 BEP20）购买 PSN 点卡（PlayStation Store）。点卡国家须与 PSN 账户国家一致，兑换码通过邮件发送。',
     h1: 'PlayStation Store 点卡，USDT 支付',
     intro: [
       'PlayStation Store 礼品卡可为您的 PlayStation Network 钱包充值，用于在 PS5 和 PS4 上购买游戏、追加内容、PlayStation Plus 等。',
-      '支持通过 TRC20、ERC20、BEP20、Solana 或 TON 网络以 USDT 付款。经过简短的人工审核后，我们会将兑换码发送到您的邮箱。',
+      '支持通过 TRC20、ERC20 或 BEP20 网络以 USDT 付款。经过简短的人工审核后，我们会将兑换码发送到您的邮箱。',
     ],
     regionTitle: '点卡国家必须与账户国家一致',
     region: [
@@ -59,11 +59,11 @@ const zh: BrandSet = {
   'pubg-mobile': {
     name: 'PUBG Mobile UC',
     title: 'PUBG Mobile UC 充值 USDT 购买 | Boostipay',
-    description: '用 USDT（TRC20、ERC20、BEP20、Solana 或 TON）购买 PUBG Mobile UC 兑换码，适用于国际服。兑换码通过邮件发送，在 Midasbuy 兑换。',
+    description: '用 USDT（TRC20、ERC20 或 BEP20）购买 PUBG Mobile UC 兑换码，适用于国际服。兑换码通过邮件发送，在 Midasbuy 兑换。',
     h1: 'PUBG Mobile UC，USDT 支付',
     intro: [
       'UC（Unknown Cash）是 PUBG Mobile 的游戏内货币，可用于购买 Royale Pass、服装、武器皮肤和箱子。',
-      '您将通过电子邮件收到 UC 兑换码，并使用您的玩家 ID（Player ID）充值到账户。支持通过 TRC20、ERC20、BEP20、Solana 或 TON 网络以 USDT 付款。',
+      '您将通过电子邮件收到 UC 兑换码，并使用您的玩家 ID（Player ID）充值到账户。支持通过 TRC20、ERC20 或 BEP20 网络以 USDT 付款。',
     ],
     regionTitle: '适用于哪个版本？',
     region: [
@@ -86,7 +86,7 @@ const zh: BrandSet = {
   'razer-gold': {
     name: 'Razer Gold',
     title: '雷蛇 Razer Gold 充值卡 USDT 购买 | Boostipay',
-    description: '用 USDT（TRC20、ERC20、BEP20、Solana 或 TON）购买 Razer Gold PIN 码，请选择与您 Razer Gold 钱包地区相符的 PIN。PIN 码通过电子邮件发送。',
+    description: '用 USDT（TRC20、ERC20 或 BEP20）购买 Razer Gold PIN 码，请选择与您 Razer Gold 钱包地区相符的 PIN。PIN 码通过电子邮件发送。',
     h1: 'Razer Gold PIN 码，USDT 支付',
     intro: [
       'Razer Gold 是一款游戏钱包，数千款游戏和商店都支持用它购买游戏内点数，从手机游戏到 PC 游戏都有。',
@@ -113,11 +113,11 @@ const zh: BrandSet = {
   'google-play': {
     name: 'Google Play',
     title: 'Google Play 礼品卡 USDT 购买 | Boostipay',
-    description: '用 USDT（TRC20、ERC20、BEP20、Solana 或 TON）购买 Google Play 礼品卡兑换码。礼品卡国家须与您的 Google Play 国家一致，兑换码通过电子邮件发送。',
+    description: '用 USDT（TRC20、ERC20 或 BEP20）购买 Google Play 礼品卡兑换码。礼品卡国家须与您的 Google Play 国家一致，兑换码通过电子邮件发送。',
     h1: 'Google Play 礼品卡，USDT 支付',
     intro: [
       'Google Play 礼品卡可为您的 Google 账号充值余额，用于在 Google Play 上购买应用、游戏内购、订阅、图书和影片。',
-      '支持通过 TRC20、ERC20、BEP20、Solana 或 TON 网络以 USDT 付款。经过简短的人工审核后，兑换码将发送到您的邮箱。',
+      '支持通过 TRC20、ERC20 或 BEP20 网络以 USDT 付款。经过简短的人工审核后，兑换码将发送到您的邮箱。',
     ],
     regionTitle: '礼品卡国家必须与 Google Play 国家一致',
     region: [
@@ -140,11 +140,11 @@ const zh: BrandSet = {
   apple: {
     name: 'Apple Gift Card',
     title: '苹果礼品卡（App Store & iTunes）USDT 购买 | Boostipay',
-    description: '用 USDT（TRC20、ERC20、BEP20、Solana 或 TON）购买苹果礼品卡，适用于 App Store、iTunes 和 iCloud+。礼品卡国家须与 Apple 账户一致，兑换码邮件发送。',
+    description: '用 USDT（TRC20、ERC20 或 BEP20）购买苹果礼品卡，适用于 App Store、iTunes 和 iCloud+。礼品卡国家须与 Apple 账户一致，兑换码邮件发送。',
     h1: '苹果礼品卡，USDT 支付',
     intro: [
       'Apple Gift Card 可为您的 Apple 账户充值余额，用于购买应用、游戏、App 内购买项目、Apple Music、iCloud+ 及其他订阅。',
-      '支持通过 TRC20、ERC20、BEP20、Solana 或 TON 网络以 USDT 付款。经过简短的人工审核后，兑换码将发送到您的邮箱。',
+      '支持通过 TRC20、ERC20 或 BEP20 网络以 USDT 付款。经过简短的人工审核后，兑换码将发送到您的邮箱。',
     ],
     regionTitle: '礼品卡国家必须与 Apple 账户一致',
     region: [

@@ -5,11 +5,11 @@ const ru: BrandSet = {
   steam: {
     name: 'Кошелёк Steam',
     title: 'Пополнить Steam за USDT — коды кошелька | Boostipay',
-    description: 'Пополнить Steam за USDT в сетях TRC20, ERC20, BEP20, Solana или TON: коды Steam Wallet в валюте вашего кошелька Steam. Код приходит на e-mail после проверки.',
+    description: 'Пополнить Steam за USDT в сетях TRC20, ERC20 или BEP20: коды Steam Wallet в валюте вашего кошелька Steam. Код приходит на e-mail после проверки.',
     h1: 'Коды пополнения Steam с оплатой в USDT',
     intro: [
       'Код Steam Wallet пополняет баланс вашего аккаунта Steam. Средства можно тратить на игры, DLC, внутриигровые предметы и покупки на Торговой площадке сообщества.',
-      'Оплата в USDT в сетях TRC20, ERC20, BEP20, Solana или TON. После короткой ручной проверки мы отправим код на ваш e-mail. Регистрироваться у нас не нужно.',
+      'Оплата в USDT в сетях TRC20, ERC20 или BEP20. После короткой ручной проверки мы отправим код на ваш e-mail. Регистрироваться у нас не нужно.',
     ],
     regionTitle: 'Какой код Steam выбрать?',
     region: [
@@ -32,11 +32,11 @@ const ru: BrandSet = {
   playstation: {
     name: 'PlayStation Store',
     title: 'Карты PSN (PlayStation Store) за USDT | Boostipay',
-    description: 'Купить карту PSN для PlayStation Store за USDT (TRC20, ERC20, BEP20, Solana или TON). Страна карты должна совпадать со страной аккаунта PSN. Код придёт на e-mail.',
+    description: 'Купить карту PSN для PlayStation Store за USDT (TRC20, ERC20 или BEP20). Страна карты должна совпадать со страной аккаунта PSN. Код придёт на e-mail.',
     h1: 'Карты пополнения PlayStation Store с оплатой в USDT',
     intro: [
       'Подарочная карта PlayStation Store пополняет кошелёк PlayStation Network. Средства можно тратить на игры, дополнения, PlayStation Plus и многое другое на PS5 и PS4.',
-      'Оплата в USDT в сетях TRC20, ERC20, BEP20, Solana или TON. После короткой ручной проверки мы отправим код на ваш e-mail.',
+      'Оплата в USDT в сетях TRC20, ERC20 или BEP20. После короткой ручной проверки мы отправим код на ваш e-mail.',
     ],
     regionTitle: 'Страна карты должна совпадать со страной аккаунта',
     region: [
@@ -59,11 +59,11 @@ const ru: BrandSet = {
   'pubg-mobile': {
     name: 'PUBG Mobile UC',
     title: 'Купить UC PUBG Mobile за USDT | Boostipay',
-    description: 'Купить UC для PUBG Mobile за USDT в сетях TRC20, ERC20, BEP20, Solana или TON. Коды для глобальной версии игры. Код приходит на e-mail, активация на Midasbuy.',
+    description: 'Купить UC для PUBG Mobile за USDT в сетях TRC20, ERC20 или BEP20. Коды для глобальной версии игры. Код приходит на e-mail, активация на Midasbuy.',
     h1: 'UC для PUBG Mobile с оплатой в USDT',
     intro: [
       'UC (Unknown Cash) — внутриигровая валюта PUBG Mobile. На неё покупают Royale Pass, костюмы, скины оружия и ящики.',
-      'Вы получаете код UC на e-mail и зачисляете его на аккаунт по своему Player ID. Оплата в USDT в сетях TRC20, ERC20, BEP20, Solana или TON.',
+      'Вы получаете код UC на e-mail и зачисляете его на аккаунт по своему Player ID. Оплата в USDT в сетях TRC20, ERC20 или BEP20.',
     ],
     regionTitle: 'С какой версией игры работают коды?',
     region: [
@@ -86,7 +86,7 @@ const ru: BrandSet = {
   'razer-gold': {
     name: 'Razer Gold',
     title: 'PIN-коды Razer Gold за USDT | Boostipay',
-    description: 'Купить PIN-код Razer Gold за USDT в сетях TRC20, ERC20, BEP20, Solana или TON. Выберите PIN-код для региона вашего кошелька Razer Gold. Код придёт на e-mail.',
+    description: 'Купить PIN-код Razer Gold за USDT в сетях TRC20, ERC20 или BEP20. Выберите PIN-код для региона вашего кошелька Razer Gold. Код придёт на e-mail.',
     h1: 'PIN-коды Razer Gold с оплатой в USDT',
     intro: [
       'Razer Gold — игровой кошелёк. Тысячи игр и магазинов принимают его для покупки внутриигровой валюты — от мобильных игр до игр на ПК.',
@@ -113,11 +113,11 @@ const ru: BrandSet = {
   'google-play': {
     name: 'Google Play',
     title: 'Подарочные карты Google Play за USDT | Boostipay',
-    description: 'Купить подарочную карту Google Play за USDT в сетях TRC20, ERC20, BEP20, Solana или TON. Страна карты должна совпадать со страной Google Play. Код придёт на e-mail.',
+    description: 'Купить подарочную карту Google Play за USDT в сетях TRC20, ERC20 или BEP20. Страна карты должна совпадать со страной Google Play. Код придёт на e-mail.',
     h1: 'Подарочные карты Google Play с оплатой в USDT',
     intro: [
       'Подарочная карта Google Play пополняет баланс вашего аккаунта Google. Его можно тратить на приложения, покупки в играх, подписки, книги и фильмы в Google Play.',
-      'Оплата в USDT в сетях TRC20, ERC20, BEP20, Solana или TON. Код придёт на ваш e-mail после короткой ручной проверки.',
+      'Оплата в USDT в сетях TRC20, ERC20 или BEP20. Код придёт на ваш e-mail после короткой ручной проверки.',
     ],
     regionTitle: 'Страна карты должна совпадать со страной Google Play',
     region: [
@@ -140,11 +140,11 @@ const ru: BrandSet = {
   apple: {
     name: 'Apple Gift Card',
     title: 'Подарочные карты Apple и iTunes за USDT | Boostipay',
-    description: 'Купить Apple Gift Card для App Store, iTunes и iCloud+ за USDT (TRC20, ERC20, BEP20, Solana или TON). Страна карты должна совпадать с Apple Account. Код по e-mail.',
+    description: 'Купить Apple Gift Card для App Store, iTunes и iCloud+ за USDT (TRC20, ERC20 или BEP20). Страна карты должна совпадать с Apple Account. Код по e-mail.',
     h1: 'Подарочные карты Apple с оплатой в USDT',
     intro: [
       'Apple Gift Card пополняет баланс вашего Apple Account. Его можно тратить на приложения, игры, встроенные покупки, Apple Music, iCloud+ и другие подписки.',
-      'Оплата в USDT в сетях TRC20, ERC20, BEP20, Solana или TON. Код придёт на ваш e-mail после короткой ручной проверки.',
+      'Оплата в USDT в сетях TRC20, ERC20 или BEP20. Код придёт на ваш e-mail после короткой ручной проверки.',
     ],
     regionTitle: 'Страна карты должна совпадать с вашим Apple Account',
     region: [

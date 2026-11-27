@@ -4,11 +4,11 @@ const tr: BrandSet = {
   steam: {
     name: 'Steam Cüzdan',
     title: 'Steam Cüzdan Kodu — USDT ile Satın Al | Boostipay',
-    description: 'Steam cüzdan kodunu TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile satın alın. Cüzdanınızın para birimine uygun kodu seçin, kod e-postanıza gelsin.',
+    description: 'Steam cüzdan kodunu TRC20, ERC20 veya BEP20 ağında USDT ile satın alın. Cüzdanınızın para birimine uygun kodu seçin, kod e-postanıza gelsin.',
     h1: 'USDT ile Steam cüzdan kodu',
     intro: [
       'Steam cüzdan kodu, Steam hesabınıza bakiye yükler. Bu bakiyeyle oyun, DLC, oyun içi eşya ve Topluluk Pazarı alışverişi yapabilirsiniz.',
-      'Ödemeyi TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile yaparsınız. Kısa bir manuel kontrolün ardından kod e-postanıza gönderilir. Üyelik gerekmez.',
+      'Ödemeyi TRC20, ERC20 veya BEP20 ağında USDT ile yaparsınız. Kısa bir manuel kontrolün ardından kod e-postanıza gönderilir. Üyelik gerekmez.',
     ],
     regionTitle: 'Hangi Steam kodunu almalıyım?',
     region: [
@@ -31,11 +31,11 @@ const tr: BrandSet = {
   playstation: {
     name: 'PlayStation Store',
     title: 'PSN Kodu (PlayStation Store) — USDT ile Al | Boostipay',
-    description: 'PlayStation Store (PSN) cüzdan kodunu TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile satın alın. Kartın ülkesi PSN hesabınızın ülkesiyle aynı olmalı.',
+    description: 'PlayStation Store (PSN) cüzdan kodunu TRC20, ERC20 veya BEP20 ağında USDT ile satın alın. Kartın ülkesi PSN hesabınızın ülkesiyle aynı olmalı.',
     h1: 'USDT ile PlayStation Store (PSN) kodu',
     intro: [
       'PlayStation Store kodu, PlayStation Network cüzdanınıza bakiye yükler. PS5 ve PS4’te oyun, eklenti, PlayStation Plus ve daha fazlası için kullanılır.',
-      'Ödemeyi TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile yaparsınız. Kısa bir manuel kontrolün ardından kod e-postanıza gönderilir.',
+      'Ödemeyi TRC20, ERC20 veya BEP20 ağında USDT ile yaparsınız. Kısa bir manuel kontrolün ardından kod e-postanıza gönderilir.',
     ],
     regionTitle: 'Kartın ülkesi hesabınızla aynı olmalı',
     region: [
@@ -58,11 +58,11 @@ const tr: BrandSet = {
   'pubg-mobile': {
     name: 'PUBG Mobile UC',
     title: 'PUBG Mobile UC — USDT ile Satın Al | Boostipay',
-    description: 'PUBG Mobile UC kodunu TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile satın alın. PUBG Mobile global sürümü için. Kod e-postayla gelir, Midasbuy’da yüklenir.',
+    description: 'PUBG Mobile UC kodunu TRC20, ERC20 veya BEP20 ağında USDT ile satın alın. PUBG Mobile global sürümü için. Kod e-postayla gelir, Midasbuy’da yüklenir.',
     h1: 'USDT ile PUBG Mobile UC',
     intro: [
       'UC (Unknown Cash), PUBG Mobile’ın oyun içi parasıdır. Royale Pass, kıyafet, silah kaplaması ve sandıklar için kullanılır.',
-      'E-postanıza bir UC kodu gelir; bu kodu Oyuncu ID’nizle hesabınıza yüklersiniz. Ödemeyi TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile yaparsınız.',
+      'E-postanıza bir UC kodu gelir; bu kodu Oyuncu ID’nizle hesabınıza yüklersiniz. Ödemeyi TRC20, ERC20 veya BEP20 ağında USDT ile yaparsınız.',
     ],
     regionTitle: 'Hangi sürümde çalışır?',
     region: [
@@ -85,7 +85,7 @@ const tr: BrandSet = {
   'razer-gold': {
     name: 'Razer Gold',
     title: 'Razer Gold PIN — USDT ile Satın Al | Boostipay',
-    description: 'Razer Gold PIN kodunu TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile satın alın. Razer Gold cüzdanınızın bölgesine uygun PIN’i seçin, kod e-postayla gelir.',
+    description: 'Razer Gold PIN kodunu TRC20, ERC20 veya BEP20 ağında USDT ile satın alın. Razer Gold cüzdanınızın bölgesine uygun PIN’i seçin, kod e-postayla gelir.',
     h1: 'USDT ile Razer Gold PIN',
     intro: [
       'Razer Gold bir oyun cüzdanıdır. Mobil oyunlardan PC oyunlarına kadar binlerce oyun ve mağaza, oyun içi kredi için Razer Gold kabul eder.',
@@ -112,11 +112,11 @@ const tr: BrandSet = {
   'google-play': {
     name: 'Google Play',
     title: 'Google Play Hediye Kartı — USDT ile Al | Boostipay',
-    description: 'Google Play hediye kartı kodunu TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile satın alın. Kartın ülkesi Google Play ülkenizle aynı olmalı. Kod e-postayla gelir.',
+    description: 'Google Play hediye kartı kodunu TRC20, ERC20 veya BEP20 ağında USDT ile satın alın. Kartın ülkesi Google Play ülkenizle aynı olmalı. Kod e-postayla gelir.',
     h1: 'USDT ile Google Play hediye kartı',
     intro: [
       'Google Play hediye kartı, Google hesabınıza bakiye yükler. Uygulama, oyun içi satın alma, abonelik, kitap ve film için kullanılır.',
-      'Ödemeyi TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile yaparsınız. Kısa bir manuel kontrolün ardından kod e-postanıza gönderilir.',
+      'Ödemeyi TRC20, ERC20 veya BEP20 ağında USDT ile yaparsınız. Kısa bir manuel kontrolün ardından kod e-postanıza gönderilir.',
     ],
     regionTitle: 'Kartın ülkesi Google Play ülkenizle aynı olmalı',
     region: [
@@ -139,11 +139,11 @@ const tr: BrandSet = {
   apple: {
     name: 'Apple Hediye Kartı',
     title: 'Apple Hediye Kartı (App Store, iTunes) — USDT | Boostipay',
-    description: 'App Store, iTunes ve iCloud+ için Apple Hediye Kartı kodunu TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile alın. Kartın ülkesi Apple Hesabınızla aynı olmalı.',
+    description: 'App Store, iTunes ve iCloud+ için Apple Hediye Kartı kodunu TRC20, ERC20 veya BEP20 ağında USDT ile alın. Kartın ülkesi Apple Hesabınızla aynı olmalı.',
     h1: 'USDT ile Apple Hediye Kartı',
     intro: [
       'Apple Hediye Kartı, Apple Hesabınıza bakiye yükler. Uygulama, oyun, uygulama içi satın alma, Apple Music, iCloud+ ve diğer abonelikler için kullanılır.',
-      'Ödemeyi TRC20, ERC20, BEP20, Solana veya TON ağında USDT ile yaparsınız. Kısa bir manuel kontrolün ardından kod e-postanıza gönderilir.',
+      'Ödemeyi TRC20, ERC20 veya BEP20 ağında USDT ile yaparsınız. Kısa bir manuel kontrolün ardından kod e-postanıza gönderilir.',
     ],
     regionTitle: 'Kartın ülkesi Apple Hesabınızla aynı olmalı',
     region: [

@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { readCart, writeCart } from '../../lib/cart';
 import { EMAIL, field, localeOf } from '../../lib/form';
-import { createCheckout, isNetwork, ShopError } from '../../lib/shop';
+import { createCheckout, isEnabledNetwork, ShopError } from '../../lib/shop';
 import { readSession, secureCookies } from '../../lib/session';
 
 /**
@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request, cookies, url, redirect, clientAd
   const network = field(form, 'network');
   const email = field(form, 'email').toLowerCase();
   if (payWith === 'balance' && !session) return back('sign_in');
-  if (payWith === 'crypto' && !isNetwork(network)) return back('network');
+  if (payWith === 'crypto' && !isEnabledNetwork(network)) return back('network');
   if (!session && (!EMAIL.test(email) || email.length > 200)) return back('invalid_email');
 
   try {
@@ -33,7 +33,7 @@ export const POST: APIRoute = async ({ request, cookies, url, redirect, clientAd
         items,
         locale,
         payWith,
-        ...(payWith === 'crypto' && isNetwork(network) ? { network } : {}),
+        ...(payWith === 'crypto' && isEnabledNetwork(network) ? { network } : {}),
         ...(session ? {} : { email }),
       },
       { ip: clientAddress, session },

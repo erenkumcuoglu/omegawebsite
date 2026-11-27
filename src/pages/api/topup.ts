@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { field, localeOf } from '../../lib/form';
-import { createTopup, isNetwork, ShopError } from '../../lib/shop';
+import { createTopup, isEnabledNetwork, ShopError } from '../../lib/shop';
 import { readSession } from '../../lib/session';
 
 /** Balance top-up from the account page: creates a USDT payment shown on the usual order page. */
@@ -14,7 +14,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect, clientAddress
   const amount = Math.round(Number(field(form, 'amount').replace(',', '.')) * 100) / 100;
   const network = field(form, 'network');
   if (!Number.isFinite(amount) || amount <= 0) return back('invalid');
-  if (!isNetwork(network)) return back('network');
+  if (!isEnabledNetwork(network)) return back('network');
 
   try {
     const checkout = await createTopup(amount, network, { ip: clientAddress, session });

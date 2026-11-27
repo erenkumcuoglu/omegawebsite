@@ -8,6 +8,7 @@ import { cacheCatalog } from '../../lib/http';
 import { SITE_NAME, SITE_URL, SUPPORT_EMAIL } from '../../lib/site';
 import { BRAND_KEYS, brandCopy, brandPath } from '../../content/brands';
 import Tile from '../../components/Tile.astro';
+import { brandImage } from '../../lib/images';
 
 const { locale } = Astro.params;
 if (!isLocale(locale)) return Astro.rewrite('/404');
@@ -67,7 +68,7 @@ const jsonLd = [
           return (
             <li>
               <a href={`/${locale}${brandPath(key, locale)}`}>
-                <Tile name={name} />
+                <Tile name={name} image={brandImage(key)} />
                 <span>{name}</span>
               </a>
             </li>

@@ -3,12 +3,24 @@ import { tileOf } from '../lib/tile';
 
 interface Props {
   name: string;
-  size?: 'card' | 'large';
+  /** Partner artwork; without it a brand-gradient tile with initials is drawn. */
+  image?: string | null;
+  size?: 'card' | 'large' | 'thumb';
+  /** Above-the-fold images load eagerly. */
+  eager?: boolean;
 }
-const { name, size = 'card' } = Astro.props;
+const { name, image, size = 'card', eager = false } = Astro.props;
 const { initials, hue } = tileOf(name);
 ---
 
-<div class:list={['tile', size]} style={`--h:${hue}`} aria-hidden="true">
-  <span>{initials}</span>
-</div>
+{
+  image ? (
+    <div class:list={['tile', 'has-image', size]} aria-hidden="true">
+      <img src={image} alt="" width="178" height="178" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    </div>
+  ) : (
+    <div class:list={['tile', size]} style={`--h:${hue}`} aria-hidden="true">
+      <span>{initials}</span>
+    </div>
+  )
+}

@@ -1,6 +1,8 @@
 ---
 /** Cart and payment in one page. Per buyer: never cached, never indexed. */
 import Layout from '../../layouts/Layout.astro';
+import Tile from '../../components/Tile.astro';
+import { productImage } from '../../lib/images';
 import { formatUsd, isLocale } from '../../i18n/locales';
 import { fill, strings, type Strings } from '../../i18n/strings';
 import { catalog, MAX_QUANTITY, me, paymentOptions, type Account, type PaymentOption, type Product } from '../../lib/shop';
@@ -62,6 +64,7 @@ const error = errorCode ? (t[`err_${errorCode}` as keyof Strings] ?? t.err_gener
             <ul class="cart-lines">
               {lines.map((line) => (
                 <li class:list={['cart-line', { gone: !line.available }]}>
+                  <Tile name={line.product?.family ?? line.product?.title ?? line.slug} image={line.product ? productImage(line.product) : null} size="thumb" />
                   <div class="cart-line-main">
                     {line.product ? <a href={`/${locale}/${line.slug}`}>{line.product.title}</a> : <span>{line.slug}</span>}
                     {line.available ? (

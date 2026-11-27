@@ -18,6 +18,13 @@ export interface Product {
 export type Network = string;
 export const isNetwork = (value: unknown): value is Network => typeof value === 'string' && /^[A-Z0-9_]{2,16}$/.test(value);
 
+/**
+ * Networks the site offers right now. The API may list more (POLYGON, ARBITRUM, AVAXC, SOLANA, TON);
+ * they stay hidden and are refused at checkout until added here.
+ */
+export const ENABLED_NETWORKS: readonly Network[] = ['TRC20', 'ERC20', 'BEP20'];
+export const isEnabledNetwork = (value: unknown): value is Network => isNetwork(value) && ENABLED_NETWORKS.includes(value);
+
 /** A network the shop has an address for right now. */
 export interface PaymentOption {
   network: Network;
@@ -161,9 +168,9 @@ export async function catalog(): Promise<Product[]> {
 }
 
 export async function paymentOptions(): Promise<PaymentOption[]> {
-  if (mock()) return MOCK_OPTIONS;
+  if (mock()) return MOCK_OPTIONS.filter((o) => isEnabledNetwork(o.network));
   const options = await call<PaymentOption[]>('/payment-options');
-  return options.filter((o) => isNetwork(o.network));
+  return options.filter((o) => isEnabledNetwork(o.network));
 }
 
 /* ---------- checkout ---------- */
@@ -256,6 +263,15 @@ const MOCK_PRODUCTS: Product[] = [
   { slug: 'razer-gold-10-usd', title: 'Razer Gold 10 USD', family: 'Razer Gold', price: 10.4, inStock: true },
   { slug: 'google-play-10-usd', title: 'Google Play 10 USD', family: 'Google Play', price: 10.5, inStock: true },
   { slug: 'mobile-legends-86-diamonds', title: 'Mobile Legends 86 Diamonds', family: 'Mobile Legends', price: 1.59, inStock: true },
+  { slug: 'psn-tr-250-try', title: 'PlayStation Store 250 TL (TR)', family: 'PlayStation', price: 6.4, inStock: true },
+  { slug: 'psn-us-10-usd', title: 'PlayStation Store 10 USD (US)', family: 'PlayStation', price: 10.7, inStock: true },
+  { slug: 'apple-gift-card-10-usd', title: 'Apple Gift Card 10 USD (US)', family: 'Apple', price: 10.6, inStock: true },
+  { slug: 'google-play-25-usd', title: 'Google Play 25 USD', family: 'Google Play', price: 26.2, inStock: true },
+  { slug: 'free-fire-520-diamonds', title: 'Free Fire 520 Diamonds', family: 'Free Fire', price: 4.99, inStock: true },
+  { slug: 'cod-mobile-420-cp', title: 'Call of Duty Mobile 420 CP', family: 'Call of Duty Mobile', price: 4.99, inStock: true },
+  { slug: 'league-of-legends-1380-rp', title: 'League of Legends 1380 RP', family: 'League of Legends', price: 10.9, inStock: true },
+  { slug: 'fortnite-1000-v-bucks', title: 'Fortnite 1000 V-Bucks', family: 'Fortnite', price: 8.99, inStock: true },
+  { slug: 'razer-gold-25-usd', title: 'Razer Gold 25 USD', family: 'Razer Gold', price: 25.9, inStock: true },
 ];
 
 const MOCK_OPTIONS: PaymentOption[] = [

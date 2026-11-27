@@ -5,6 +5,8 @@
  */
 import Layout from '../../../layouts/Layout.astro';
 import ProductCard from '../../../components/ProductCard.astro';
+import Tile from '../../../components/Tile.astro';
+import { brandImage } from '../../../lib/images';
 import { isLocale, LOCALE_INFO } from '../../../i18n/locales';
 import { fill, strings } from '../../../i18n/strings';
 import { catalog, type Product } from '../../../lib/shop';
@@ -73,8 +75,11 @@ const others = BRAND_KEYS.filter((key) => key !== brand);
 
     <div lang={fallback ? 'en' : undefined} dir={fallback ? 'ltr' : undefined}>
       <header class="brand-head">
-        <h1>{copy.h1}</h1>
-        {copy.intro.map((p) => <p class="lead">{p}</p>)}
+        <Tile name={copy.name} image={brandImage(brand)} size="large" eager />
+        <div>
+          <h1>{copy.h1}</h1>
+          {copy.intro.map((p) => <p class="lead">{p}</p>)}
+        </div>
       </header>
     </div>
 

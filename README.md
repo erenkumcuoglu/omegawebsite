@@ -15,6 +15,11 @@ Storefront for game codes and gift cards, paid with **USDT on TRC20, ERC20 or BE
 - **Business rules (shown in every language and in the terms):** the balance can only be spent here. A top-up is a digital goods purchase and cannot be withdrawn, transferred or refunded. Top-up opens after the first delivered order. Every order is reviewed before the code is e-mailed.
 - Catalog pages are CDN-cached and the same for everyone. Nothing per buyer is rendered into them: the header cart badge reads the cookie in the browser. Cart, account and order pages are `no-store` and `noindex`.
 
+## Product images and networks
+
+- Product artwork comes from our partner Coda (Codashop tiles, used with their permission) and is served from `public/products/`. `src/lib/images.ts` picks the image from the product's family and title; products without a match (e.g. Razer Gold) get a brand-gradient tile.
+- USDT networks: the site only offers `ENABLED_NETWORKS` in `src/lib/shop.ts` (TRC20, ERC20, BEP20). The API can list more (Polygon, Arbitrum, Avalanche, Solana, TON); they stay hidden and are refused at checkout until added there.
+
 ## How buying works
 
 1. Product page (`/{locale}/{slug}`): the buyer picks a network (from `GET /payment-options`, only networks with an address) and enters an e-mail. The form posts to `/api/checkout`.
