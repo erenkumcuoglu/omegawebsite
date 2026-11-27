@@ -4,12 +4,12 @@ import type { BrandSet } from './types';
 const id: BrandSet = {
   steam: {
     name: 'Steam Wallet',
-    title: 'Voucher Steam Wallet — Beli dengan USDT | Omega Digital',
-    description: 'Beli voucher Steam Wallet dengan USDT di jaringan TRC20, ERC20 atau BEP20. Pilih mata uang yang sesuai dengan dompet Steam Anda. Kode dikirim via e-mail.',
+    title: 'Voucher Steam Wallet — Beli dengan USDT | Boostipay',
+    description: 'Beli voucher Steam Wallet dengan USDT di jaringan TRC20, ERC20, BEP20, Solana, atau TON. Pilih mata uang yang sesuai dengan dompet Steam Anda. Kode dikirim via e-mail.',
     h1: 'Voucher Steam Wallet, bayar pakai USDT',
     intro: [
       'Kode Steam Wallet menambah saldo akun Steam Anda. Saldo bisa dipakai untuk game, DLC, item dalam game, dan pembelian di Pasar Komunitas.',
-      'Bayar dengan USDT di jaringan TRC20, ERC20 atau BEP20. Setelah pengecekan manual singkat, kami kirim kodenya ke e-mail Anda. Anda tidak perlu membuat akun di situs kami.',
+      'Bayar dengan USDT di jaringan TRC20, ERC20, BEP20, Solana, atau TON. Setelah pengecekan manual singkat, kami kirim kodenya ke e-mail Anda. Anda tidak perlu membuat akun di situs kami.',
     ],
     regionTitle: 'Voucher Steam mana yang harus saya beli?',
     region: [
@@ -31,12 +31,12 @@ const id: BrandSet = {
   },
   playstation: {
     name: 'PlayStation Store',
-    title: 'Voucher PSN PlayStation Store — Bayar USDT | Omega Digital',
-    description: 'Beli voucher PSN (PlayStation Store) dengan USDT di TRC20, ERC20 atau BEP20. Negara kartu harus sama dengan negara akun PSN Anda. Kode dikirim via e-mail.',
+    title: 'Voucher PSN PlayStation Store — Bayar USDT | Boostipay',
+    description: 'Beli voucher PSN (PlayStation Store) dengan USDT di TRC20, ERC20, BEP20, Solana, atau TON. Negara kartu harus sama dengan negara akun PSN Anda. Kode dikirim via e-mail.',
     h1: 'Voucher PlayStation Store, bayar pakai USDT',
     intro: [
       'Kartu hadiah PlayStation Store menambah saldo dompet PlayStation Network Anda. Gunakan untuk game, add-on, PlayStation Plus, dan lainnya di PS5 dan PS4.',
-      'Bayar dengan USDT di jaringan TRC20, ERC20 atau BEP20. Setelah pengecekan manual singkat, kami kirim kodenya ke e-mail Anda.',
+      'Bayar dengan USDT di jaringan TRC20, ERC20, BEP20, Solana, atau TON. Setelah pengecekan manual singkat, kami kirim kodenya ke e-mail Anda.',
     ],
     regionTitle: 'Negara kartu harus sama dengan negara akun Anda',
     region: [
@@ -58,12 +58,12 @@ const id: BrandSet = {
   },
   'pubg-mobile': {
     name: 'PUBG Mobile UC',
-    title: 'Top Up UC PUBG Mobile — Bayar pakai USDT | Omega Digital',
-    description: 'Top up UC PUBG Mobile dengan kode redeem, bayar USDT di TRC20, ERC20 atau BEP20. Untuk PUBG Mobile versi global. Kode dikirim via e-mail, redeem di Midasbuy.',
+    title: 'Top Up UC PUBG Mobile — Bayar pakai USDT | Boostipay',
+    description: 'Top up UC PUBG Mobile dengan kode redeem, bayar USDT di TRC20, ERC20, BEP20, Solana, atau TON. Untuk PUBG Mobile versi global. Kode dikirim via e-mail, redeem di Midasbuy.',
     h1: 'Top up UC PUBG Mobile, bayar pakai USDT',
     intro: [
       'UC (Unknown Cash) adalah mata uang dalam game PUBG Mobile. Gunakan untuk Royale Pass, outfit, skin senjata, dan crate.',
-      'Anda menerima kode redeem UC via e-mail dan memasukkannya ke akun dengan Player ID Anda. Bayar dengan USDT di jaringan TRC20, ERC20 atau BEP20.',
+      'Anda menerima kode redeem UC via e-mail dan memasukkannya ke akun dengan Player ID Anda. Bayar dengan USDT di jaringan TRC20, ERC20, BEP20, Solana, atau TON.',
     ],
     regionTitle: 'Berlaku untuk versi yang mana?',
     region: [
@@ -85,8 +85,8 @@ const id: BrandSet = {
   },
   'razer-gold': {
     name: 'Razer Gold',
-    title: 'PIN Razer Gold — Beli dengan USDT | Omega Digital',
-    description: 'Beli kode PIN Razer Gold dengan USDT di jaringan TRC20, ERC20 atau BEP20. Pilih PIN yang sesuai dengan region dompet Razer Gold Anda. Kode dikirim via e-mail.',
+    title: 'PIN Razer Gold — Beli dengan USDT | Boostipay',
+    description: 'Beli kode PIN Razer Gold dengan USDT di jaringan TRC20, ERC20, BEP20, Solana, atau TON. Pilih PIN yang sesuai dengan region dompet Razer Gold Anda. Kode dikirim via e-mail.',
     h1: 'PIN Razer Gold, bayar pakai USDT',
     intro: [
       'Razer Gold adalah dompet khusus gaming. Ribuan game dan toko menerimanya untuk kredit dalam game, mulai dari game mobile hingga game PC.',
@@ -112,12 +112,12 @@ const id: BrandSet = {
   },
   'google-play': {
     name: 'Google Play',
-    title: 'Voucher Google Play — Beli dengan USDT | Omega Digital',
-    description: 'Beli kode voucher Google Play dengan USDT di jaringan TRC20, ERC20 atau BEP20. Negara kartu harus sama dengan negara Google Play Anda. Kode dikirim via e-mail.',
+    title: 'Voucher Google Play — Beli dengan USDT | Boostipay',
+    description: 'Beli kode voucher Google Play dengan USDT di jaringan TRC20, ERC20, BEP20, Solana, atau TON. Negara kartu harus sama dengan negara Google Play Anda. Kode dikirim via e-mail.',
     h1: 'Voucher Google Play, bayar pakai USDT',
     intro: [
       'Kartu hadiah Google Play menambah saldo akun Google Anda. Gunakan untuk aplikasi, pembelian dalam game, langganan, buku, dan film di Google Play.',
-      'Bayar dengan USDT di jaringan TRC20, ERC20 atau BEP20. Kode dikirim ke e-mail Anda setelah pengecekan manual singkat.',
+      'Bayar dengan USDT di jaringan TRC20, ERC20, BEP20, Solana, atau TON. Kode dikirim ke e-mail Anda setelah pengecekan manual singkat.',
     ],
     regionTitle: 'Negara kartu harus sama dengan negara Google Play Anda',
     region: [
@@ -139,12 +139,12 @@ const id: BrandSet = {
   },
   apple: {
     name: 'Apple Gift Card',
-    title: 'Apple Gift Card & iTunes — Beli pakai USDT | Omega Digital',
-    description: 'Beli Apple Gift Card untuk App Store, iTunes dan iCloud+ dengan USDT (TRC20, ERC20, BEP20). Negara kartu harus sama dengan Apple Account. Kode via e-mail.',
+    title: 'Apple Gift Card & iTunes — Beli pakai USDT | Boostipay',
+    description: 'Beli Apple Gift Card untuk App Store, iTunes dan iCloud+ dengan USDT (TRC20, BEP20, Solana, TON…). Negara kartu harus sama dengan Apple Account. Kode via e-mail.',
     h1: 'Apple Gift Card, bayar pakai USDT',
     intro: [
       'Apple Gift Card menambah saldo Apple Account Anda. Gunakan untuk aplikasi, game, pembelian dalam aplikasi, Apple Music, iCloud+, dan langganan lainnya.',
-      'Bayar dengan USDT di jaringan TRC20, ERC20 atau BEP20. Kode dikirim ke e-mail Anda setelah pengecekan manual singkat.',
+      'Bayar dengan USDT di jaringan TRC20, ERC20, BEP20, Solana, atau TON. Kode dikirim ke e-mail Anda setelah pengecekan manual singkat.',
     ],
     regionTitle: 'Negara kartu harus sama dengan Apple Account Anda',
     region: [

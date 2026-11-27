@@ -1,12 +1,20 @@
-/* Omega Digital — one stylesheet, logical properties so Arabic (RTL) mirrors itself. */
+/* Boostipay — one stylesheet, logical properties so Arabic (RTL) mirrors itself. */
 :root {
-  --brand: #d91557;
-  --brand-dark: #b80f49;
-  --brand-soft: #fff0f5;
-  --ink: #17181d;
-  --muted: #5f6877;
-  --line: #e4e8ee;
-  --bg: #f7f8fb;
+  /* Boostipay brand (Logo & Guide): Color 1 cyan, Color 2 indigo, Color 3 purple. */
+  --cyan: #11b7eb;
+  --indigo: #2825ad;
+  --purple: #a641d1;
+  --pink: #d75fd6;
+  --brand: var(--indigo);
+  --brand-dark: #1d1b85;
+  --brand-soft: #eeedfb;
+  --brand-gradient: linear-gradient(100deg, var(--cyan) 0%, var(--indigo) 38%, var(--purple) 78%, var(--pink) 100%);
+  --button-gradient: linear-gradient(100deg, var(--indigo) 0%, #5a2fc4 55%, #7d36c9 100%);
+  --night: #110f45;
+  --ink: #15142b;
+  --muted: #5d6075;
+  --line: #e4e4f0;
+  --bg: #f6f6fc;
   --card: #ffffff;
   --ok: #0b7650;
   --ok-soft: #e7f6ef;
@@ -161,16 +169,17 @@ h3 {
   padding: 10px 20px;
   border: 0;
   border-radius: 10px;
-  background: var(--brand);
+  background: var(--button-gradient);
   color: #fff;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: filter 0.15s, box-shadow 0.15s;
 }
 
 .btn:hover {
-  background: var(--brand-dark);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 18px rgba(40, 37, 173, 0.28);
 }
 
 .btn:disabled {
@@ -248,13 +257,13 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 16px;
-  min-height: 64px;
+  min-height: 72px;
 }
 
 .logo img {
   display: block;
-  width: 132px;
-  height: auto;
+  width: auto;
+  height: 56px;
 }
 
 .main-nav {
@@ -337,10 +346,26 @@ textarea:focus {
 
 /* ---------- hero ---------- */
 .hero {
+  /* The guide's gradient: cyan glow bottom-left, indigo, purple, pink glow top-right. */
   background:
-    radial-gradient(1200px 400px at 85% -10%, rgba(217, 21, 87, 0.12), transparent 60%),
-    linear-gradient(180deg, #fff 0%, var(--bg) 100%);
-  border-bottom: 1px solid var(--line);
+    radial-gradient(60% 90% at 0% 100%, rgba(17, 183, 235, 0.85), transparent 60%),
+    radial-gradient(45% 70% at 100% 0%, rgba(240, 170, 225, 0.8), transparent 60%),
+    linear-gradient(100deg, #1f3fd0 0%, var(--indigo) 32%, #7a22c9 70%, var(--purple) 100%);
+  color: #fff;
+}
+
+.hero .lead {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.hero .btn {
+  background: #fff;
+  color: var(--indigo);
+}
+
+.hero .btn:hover {
+  filter: none;
+  box-shadow: 0 8px 24px rgba(10, 8, 60, 0.35);
 }
 
 .hero-grid {
@@ -368,10 +393,11 @@ textarea:focus {
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  background: #fff;
-  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 12px;
   font-weight: 600;
+  backdrop-filter: blur(6px);
 }
 
 .trust-icon {
@@ -381,8 +407,8 @@ textarea:focus {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--brand-soft);
-  color: var(--brand);
+  background: #fff;
+  color: var(--indigo);
   font-weight: 700;
 }
 
@@ -517,9 +543,10 @@ textarea:focus {
   display: grid;
   place-items: center;
   aspect-ratio: 16 / 10;
+  /* Brand-range gradients only (cyan 195° → indigo 241° → purple 281°), shifted per product. */
   background:
-    radial-gradient(120% 90% at 0% 0%, hsl(var(--h) 85% 62%), transparent 60%),
-    linear-gradient(135deg, hsl(var(--h) 70% 42%), hsl(calc(var(--h) + 40) 70% 30%));
+    radial-gradient(110% 90% at 0% 100%, hsl(var(--h) 88% 58% / 0.9), transparent 60%),
+    linear-gradient(120deg, hsl(calc(var(--h) + 20) 64% 42%), hsl(calc(var(--h) + 55) 62% 50%));
   color: rgba(255, 255, 255, 0.95);
   font-weight: 800;
   font-size: 2rem;
@@ -804,8 +831,42 @@ code {
 /* ---------- footer ---------- */
 .site-footer {
   margin-top: 48px;
+  background:
+    radial-gradient(50% 120% at 100% 0%, rgba(166, 65, 209, 0.35), transparent 60%),
+    var(--night);
+  color: #fff;
+}
+
+.site-footer .muted,
+.site-footer .footer-links a,
+.site-footer .footer-bar {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.site-footer a {
+  color: #fff;
+}
+
+.site-footer .footer-links a:hover {
+  color: var(--cyan);
+}
+
+.site-footer input,
+.site-footer textarea {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.site-footer input:focus,
+.site-footer textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(17, 183, 235, 0.25);
+}
+
+.site-footer .btn {
   background: #fff;
-  border-top: 1px solid var(--line);
+  color: var(--indigo);
 }
 
 .footer-grid {
@@ -816,8 +877,8 @@ code {
 }
 
 .footer-grid img {
-  width: 132px;
-  height: auto;
+  width: auto;
+  height: 64px;
 }
 
 .support h2 {
@@ -833,7 +894,7 @@ code {
   padding-block: 16px 28px;
   color: var(--muted);
   font-size: 0.85rem;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 @media (max-width: 720px) {
@@ -864,8 +925,8 @@ code {
 }
 
 .chip[aria-pressed='true'] {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--indigo);
+  border-color: var(--indigo);
   color: #fff;
 }
 
@@ -1384,4 +1445,52 @@ code {
 .faq p,
 .prose p {
   overflow-wrap: anywhere;
+}
+
+/* Up to 8 networks: two columns on wider screens. */
+.networks {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.networks > small,
+.networks > p,
+.networks > .alert {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 380px) {
+  .networks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Brand accents. */
+.eyebrow {
+  color: var(--purple);
+}
+
+h1 {
+  color: var(--ink);
+}
+
+.hero h1 {
+  color: #fff;
+}
+
+.networks.single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.network small {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .logo img {
+    height: 46px;
+  }
+}
+
+.net-badge {
+  background: var(--button-gradient);
 }

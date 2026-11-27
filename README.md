@@ -1,4 +1,4 @@
-# Omega Digital — omegadijital.com
+# Boostipay — boostipay.com
 
 Storefront for game codes and gift cards, paid with **USDT on TRC20, ERC20 or BEP20**. Built with [Astro](https://astro.build) and deployed on Netlify.
 

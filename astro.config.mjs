@@ -3,7 +3,7 @@ import { defineConfig, envField } from 'astro/config';
 import netlify from '@astrojs/netlify';
 
 export default defineConfig({
-  site: 'https://omegadijital.com',
+  site: 'https://boostipay.com',
   // Pages are rendered on request and cached on Netlify's CDN (see src/lib/http.ts), so prices
   // stay fresh while search engines still get real HTML for every page and language.
   output: 'server',

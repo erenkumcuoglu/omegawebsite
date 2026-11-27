@@ -67,15 +67,15 @@ Metinler `src/content/brands/{dil}.ts` dosyalarında. İngilizce ana metindir; d
 ## Kodun dışında sizin yapmanız gerekenler
 
 1. **Google Search Console**
-   - Alan mülkü (Domain property) olarak `omegadijital.com` ekleyin. Doğrulama, DNS'e (alan adının DNS'i neredeyse: Netlify DNS veya Cloudflare) bir TXT kaydı eklenerek yapılır.
-   - Site yayına çıkınca Sitemaps bölümüne `https://omegadijital.com/sitemap.xml` girin.
+   - Alan mülkü (Domain property) olarak `boostipay.com` ekleyin. Doğrulama, DNS'e (alan adının DNS'i neredeyse: Netlify DNS veya Cloudflare) bir TXT kaydı eklenerek yapılır.
+   - Site yayına çıkınca Sitemaps bölümüne `https://boostipay.com/sitemap.xml` girin.
    - "Uluslararası hedefleme" ayarı yok; hreflang yeterli.
    - İlk haftalarda Sayfalar raporunda "hreflang" ve "Canonical" uyarılarına bakın.
 2. **Bing Webmaster Tools:** Search Console'dan içe aktarma ile doğrulayın ve aynı sitemap'i gönderin. Bing, DuckDuckGo ve Yahoo'yu da besliyor.
 3. **Yandex Webmaster** (ru trafiği için): DNS TXT veya meta etiketiyle doğrulayın, sitemap'i gönderin. "Bölge" ayarını boş bırakın.
 4. **Baidu** (isteğe bağlı, zh): ICP lisansı olmadan sıralama zayıf olur; yine de Baidu Ziyuan'a sitemap gönderilebilir.
 5. **Netlify alan adı ayarları**
-   - Birincil alan adı `omegadijital.com` olsun; `www.omegadijital.com` 301 ile yönlensin (Netlify bunu "primary domain" seçince otomatik yapar).
+   - Birincil alan adı `boostipay.com` olsun; `www.boostipay.com` 301 ile yönlensin (Netlify bunu "primary domain" seçince otomatik yapar).
    - HTTPS zorunlu olsun.
    - Ortam değişkenleri `SHOP_API_URL` ve `WEB_API_TOKEN` (scope: Functions) tanımlı olsun.
    - Deploy preview ve branch deploy adresleri (`*.netlify.app`) Google'da dizine girmemeli. Önizleme adresinin yanıtında `X-Robots-Tag: noindex` olup olmadığına bakın; yoksa bunu yalnızca üretim dışı bağlamlar için ekleyelim.

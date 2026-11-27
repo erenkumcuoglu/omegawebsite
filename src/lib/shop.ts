@@ -11,10 +11,12 @@ export interface Product {
   inStock: boolean;
 }
 
-/** USDT networks the Omega API can take (apps/api/src/lib/usdt-networks.ts). */
-export const NETWORKS = ['TRC20', 'ERC20', 'BEP20', 'POLYGON', 'ARBITRUM', 'AVAXC'] as const;
-export type Network = (typeof NETWORKS)[number];
-export const isNetwork = (value: unknown): value is Network => typeof value === 'string' && (NETWORKS as readonly string[]).includes(value);
+/**
+ * A USDT network id as the Omega API names it (TRC20, ERC20, BEP20, POLYGON, ARBITRUM, AVAXC, SOLANA, TON, ...).
+ * Not a fixed list here: whatever GET /payment-options offers is shown, and the API checks it again.
+ */
+export type Network = string;
+export const isNetwork = (value: unknown): value is Network => typeof value === 'string' && /^[A-Z0-9_]{2,16}$/.test(value);
 
 /** A network the shop has an address for right now. */
 export interface PaymentOption {
@@ -263,6 +265,8 @@ const MOCK_OPTIONS: PaymentOption[] = [
   { network: 'POLYGON', label: 'Polygon', asset: 'USDT' },
   { network: 'ARBITRUM', label: 'Arbitrum One', asset: 'USDT' },
   { network: 'AVAXC', label: 'Avalanche C-Chain', asset: 'USDT' },
+  { network: 'SOLANA', label: 'Solana (SPL)', asset: 'USDT' },
+  { network: 'TON', label: 'TON', asset: 'USDT' },
 ];
 
 interface MockCustomer {
@@ -320,7 +324,14 @@ function mockCrypto(total: number, network: Network) {
     amount: (total + Math.floor(Math.random() * 999 + 1) / 1000).toFixed(3),
     network,
     networkLabel: MOCK_OPTIONS.find((o) => o.network === network)!.label,
-    payTo: network === 'TRC20' ? 'TXYZmockAddressForLocalPreviewOnly000' : '0x000000000000000000000000000000000000dEaD',
+    payTo:
+      network === 'TRC20'
+        ? 'TXYZmockAddressForLocalPreviewOnly000'
+        : network === 'SOLANA'
+          ? 'MockSoLanaAddressForLocalPreviewOnly1111111'
+          : network === 'TON'
+            ? 'UQMockTonAddressForLocalPreviewOnly_000000000000'
+            : '0x000000000000000000000000000000000000dEaD',
   };
 }
 

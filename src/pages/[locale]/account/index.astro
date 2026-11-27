@@ -74,7 +74,7 @@ const error = errorCode ? (t[`err_${errorCode}` as keyof Strings] ?? t.err_gener
                     <label class="network">
                       <input type="radio" name="network" value={option.network} checked={index === 0} />
                       <span>
-                        <strong>USDT · {option.network}</strong>
+                        <strong dir="ltr">{option.network}</strong>
                         <small>{option.label}</small>
                       </span>
                     </label>

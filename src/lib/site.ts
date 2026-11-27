@@ -1,4 +1,5 @@
 /** Site-wide constants. Change the support address here. */
-export const SITE_NAME = 'Omega Digital';
-export const SITE_URL = 'https://omegadijital.com';
-export const SUPPORT_EMAIL = 'eren@omegadijital.com';
+export const SITE_NAME = 'Boostipay';
+export const SITE_URL = 'https://boostipay.com';
+// TODO before launch: create this mailbox (or change it).
+export const SUPPORT_EMAIL = 'support@boostipay.com';

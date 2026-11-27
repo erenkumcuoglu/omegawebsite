@@ -1,4 +1,4 @@
-# Omega Digital — Astro site. Pages render on Netlify Functions and are cached on the CDN.
+# Boostipay — Astro site. Pages render on Netlify Functions and are cached on the CDN.
 [build]
   command = "npm run build"
   publish = "dist"

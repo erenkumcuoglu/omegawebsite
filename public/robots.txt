@@ -5,4 +5,4 @@ Disallow: /*/cart$
 Disallow: /*/account$
 Disallow: /*/account/
 
-Sitemap: https://omegadijital.com/sitemap.xml
+Sitemap: https://boostipay.com/sitemap.xml

@@ -3,12 +3,12 @@ import type { BrandSet } from './types';
 const pt: BrandSet = {
   steam: {
     name: 'Carteira Steam',
-    title: 'Cartão Steam: saldo Steam com USDT | Omega Digital',
-    description: 'Compre códigos de cartão Steam (saldo para a Carteira Steam) com USDT na rede TRC20, ERC20 ou BEP20. Escolha a moeda da sua carteira. Código enviado por e-mail.',
+    title: 'Cartão Steam: saldo Steam com USDT | Boostipay',
+    description: 'Compre códigos de cartão Steam (saldo para a Carteira Steam) com USDT na rede TRC20, ERC20, BEP20, Solana ou TON. Escolha a moeda da sua carteira. Código enviado por e-mail.',
     h1: 'Cartão Steam e saldo Steam, pagos com USDT',
     intro: [
       'Um código da Carteira Steam adiciona saldo à sua conta Steam. Você pode usá-lo em jogos, DLCs, itens dentro do jogo e compras no Mercado da Comunidade.',
-      'Pague com USDT na rede TRC20, ERC20 ou BEP20. Depois de uma rápida verificação manual, enviamos o código para o seu e-mail. Você não precisa criar uma conta conosco.',
+      'Pague com USDT na rede TRC20, ERC20, BEP20, Solana ou TON. Depois de uma rápida verificação manual, enviamos o código para o seu e-mail. Você não precisa criar uma conta conosco.',
     ],
     regionTitle: 'Qual cartão Steam devo comprar?',
     region: [
@@ -30,12 +30,12 @@ const pt: BrandSet = {
   },
   playstation: {
     name: 'PlayStation Store',
-    title: 'Cartão PSN (PlayStation Store) com USDT | Omega Digital',
-    description: 'Compre códigos de cartão PSN da PlayStation Store com USDT na rede TRC20, ERC20 ou BEP20. O país do cartão deve ser o da sua conta PSN. Código por e-mail.',
+    title: 'Cartão PSN (PlayStation Store) com USDT | Boostipay',
+    description: 'Compre códigos de cartão PSN da PlayStation Store com USDT na rede TRC20, ERC20, BEP20, Solana ou TON. O país do cartão deve ser o da sua conta PSN. Código por e-mail.',
     h1: 'Cartão PSN para a PlayStation Store, pago com USDT',
     intro: [
       'Um cartão presente da PlayStation Store adiciona saldo à carteira da sua conta PlayStation Network. Use-o em jogos, complementos, PlayStation Plus e muito mais no PS5 e no PS4.',
-      'Pague com USDT na rede TRC20, ERC20 ou BEP20. Depois de uma rápida verificação manual, enviamos o código para o seu e-mail.',
+      'Pague com USDT na rede TRC20, ERC20, BEP20, Solana ou TON. Depois de uma rápida verificação manual, enviamos o código para o seu e-mail.',
     ],
     regionTitle: 'O país do cartão deve ser o mesmo da sua conta',
     region: [
@@ -57,12 +57,12 @@ const pt: BrandSet = {
   },
   'pubg-mobile': {
     name: 'PUBG Mobile UC',
-    title: 'Comprar UC PUBG Mobile com USDT | Omega Digital',
-    description: 'Compre UC de PUBG Mobile com códigos de resgate pagos em USDT (TRC20, ERC20 ou BEP20). Para a versão global do jogo. Código por e-mail, resgate na Midasbuy.',
+    title: 'Comprar UC PUBG Mobile com USDT | Boostipay',
+    description: 'Compre UC de PUBG Mobile com códigos de resgate pagos em USDT (TRC20, ERC20, BEP20, Solana ou TON). Para a versão global do jogo. Código por e-mail, resgate na Midasbuy.',
     h1: 'UC de PUBG Mobile, pago com USDT',
     intro: [
       'UC (Unknown Cash) é a moeda do jogo PUBG Mobile. Use para o Royale Pass, roupas, skins de armas e caixas.',
-      'Você recebe um código de resgate de UC por e-mail e o adiciona à sua conta com o seu ID de jogador. Pague com USDT na rede TRC20, ERC20 ou BEP20.',
+      'Você recebe um código de resgate de UC por e-mail e o adiciona à sua conta com o seu ID de jogador. Pague com USDT na rede TRC20, ERC20, BEP20, Solana ou TON.',
     ],
     regionTitle: 'Com qual versão ele funciona?',
     region: [
@@ -84,8 +84,8 @@ const pt: BrandSet = {
   },
   'razer-gold': {
     name: 'Razer Gold',
-    title: 'Comprar PIN Razer Gold com USDT | Omega Digital',
-    description: 'Compre códigos PIN Razer Gold com USDT na rede TRC20, ERC20 ou BEP20. Escolha o PIN da região da sua carteira Razer Gold. Código enviado por e-mail.',
+    title: 'Comprar PIN Razer Gold com USDT | Boostipay',
+    description: 'Compre códigos PIN Razer Gold com USDT na rede TRC20, ERC20, BEP20, Solana ou TON. Escolha o PIN da região da sua carteira Razer Gold. Código enviado por e-mail.',
     h1: 'PIN Razer Gold, pago com USDT',
     intro: [
       'Razer Gold é uma carteira para games. Milhares de jogos e lojas aceitam Razer Gold para créditos dentro do jogo, de jogos mobile a títulos de PC.',
@@ -111,12 +111,12 @@ const pt: BrandSet = {
   },
   'google-play': {
     name: 'Google Play',
-    title: 'Cartão Google Play com USDT | Omega Digital',
-    description: 'Compre códigos de cartão Google Play (gift card) com USDT na rede TRC20, ERC20 ou BEP20. O país do cartão deve ser o do seu Google Play. Código por e-mail.',
+    title: 'Cartão Google Play com USDT | Boostipay',
+    description: 'Compre códigos de cartão Google Play (gift card) com USDT na rede TRC20, ERC20, BEP20, Solana ou TON. O país do cartão deve ser o do seu Google Play. Código por e-mail.',
     h1: 'Cartão Google Play, pago com USDT',
     intro: [
       'Um cartão presente do Google Play adiciona saldo à sua Conta do Google. Use-o em apps, compras dentro de jogos, assinaturas, livros e filmes no Google Play.',
-      'Pague com USDT na rede TRC20, ERC20 ou BEP20. O código é enviado para o seu e-mail depois de uma rápida verificação manual.',
+      'Pague com USDT na rede TRC20, ERC20, BEP20, Solana ou TON. O código é enviado para o seu e-mail depois de uma rápida verificação manual.',
     ],
     regionTitle: 'O país do cartão deve ser o mesmo do seu Google Play',
     region: [
@@ -138,12 +138,12 @@ const pt: BrandSet = {
   },
   apple: {
     name: 'Apple Gift Card',
-    title: 'Apple Gift Card (App Store) com USDT | Omega Digital',
-    description: 'Compre códigos Apple Gift Card para App Store, iTunes e iCloud+ com USDT na rede TRC20, ERC20 ou BEP20. O país deve ser o da sua Conta Apple. Código por e-mail.',
+    title: 'Apple Gift Card (App Store) com USDT | Boostipay',
+    description: 'Compre códigos Apple Gift Card para App Store, iTunes e iCloud+ com USDT na rede TRC20, ERC20, BEP20, Solana ou TON. O país deve ser o da sua Conta Apple. Código por e-mail.',
     h1: 'Apple Gift Card, pago com USDT',
     intro: [
       'Um Apple Gift Card adiciona saldo à sua Conta Apple. Use-o em apps, jogos, compras dentro de apps, Apple Music, iCloud+ e outras assinaturas.',
-      'Pague com USDT na rede TRC20, ERC20 ou BEP20. O código é enviado para o seu e-mail depois de uma rápida verificação manual.',
+      'Pague com USDT na rede TRC20, ERC20, BEP20, Solana ou TON. O código é enviado para o seu e-mail depois de uma rápida verificação manual.',
     ],
     regionTitle: 'O país do cartão deve ser o mesmo da sua Conta Apple',
     region: [

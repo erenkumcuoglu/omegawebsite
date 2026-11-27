@@ -4,12 +4,12 @@ import type { BrandSet } from './types';
 const ar: BrandSet = {
   steam: {
     name: 'محفظة Steam',
-    title: 'بطاقة ستيم (Steam Wallet) — شراء بـ USDT | Omega Digital',
-    description: 'اشترِ أكواد بطاقة ستيم (Steam Wallet) بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20. اختر العملة المطابقة لمحفظة Steam لديك، ويصلك الكود عبر البريد.',
+    title: 'بطاقة ستيم (Steam Wallet) — شراء بـ USDT | Boostipay',
+    description: 'اشترِ أكواد بطاقة ستيم (Steam Wallet) بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20 أو Solana أو TON. اختر العملة المطابقة لمحفظة Steam لديك، ويصلك الكود عبر البريد.',
     h1: 'أكواد بطاقة ستيم مع الدفع بـ USDT',
     intro: [
       'يضيف كود Steam Wallet رصيدًا إلى حسابك في Steam، ويمكنك إنفاقه على الألعاب والمحتوى الإضافي (DLC) والعناصر داخل الألعاب ومشتريات سوق المجتمع.',
-      'ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20. بعد مراجعة يدوية سريعة نرسل الكود إلى بريدك الإلكتروني، ولا تحتاج إلى إنشاء حساب لدينا.',
+      'ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20 أو Solana أو TON. بعد مراجعة يدوية سريعة نرسل الكود إلى بريدك الإلكتروني، ولا تحتاج إلى إنشاء حساب لدينا.',
     ],
     regionTitle: 'أي بطاقة ستيم أشتري؟',
     region: [
@@ -31,12 +31,12 @@ const ar: BrandSet = {
   },
   playstation: {
     name: 'PlayStation Store',
-    title: 'بطاقات PSN (بلايستيشن ستور) — شراء بـ USDT | Omega Digital',
-    description: 'اشترِ أكواد بطاقات PlayStation Store (PSN) بعملة USDT عبر TRC20 أو ERC20 أو BEP20. يجب أن تطابق دولة البطاقة دولة حساب PSN، ويصلك الكود عبر البريد.',
+    title: 'بطاقات PSN (بلايستيشن ستور) — شراء بـ USDT | Boostipay',
+    description: 'اشترِ أكواد بطاقات PlayStation Store (PSN) بعملة USDT عبر TRC20 أو ERC20 أو BEP20 أو Solana أو TON. يجب أن تطابق دولة البطاقة دولة حساب PSN، ويصلك الكود عبر البريد.',
     h1: 'بطاقات بلايستيشن ستور مع الدفع بـ USDT',
     intro: [
       'تضيف بطاقة PlayStation Store رصيدًا إلى محفظة PlayStation Network. استخدمه لشراء الألعاب والإضافات واشتراك PlayStation Plus وغير ذلك على PS5 وPS4.',
-      'ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20. بعد مراجعة يدوية سريعة نرسل الكود إلى بريدك الإلكتروني.',
+      'ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20 أو Solana أو TON. بعد مراجعة يدوية سريعة نرسل الكود إلى بريدك الإلكتروني.',
     ],
     regionTitle: 'يجب أن تطابق دولة البطاقة دولة حسابك',
     region: [
@@ -58,12 +58,12 @@ const ar: BrandSet = {
   },
   'pubg-mobile': {
     name: 'PUBG Mobile UC',
-    title: 'شدات ببجي (PUBG Mobile UC) — شراء بـ USDT | Omega Digital',
-    description: 'اشترِ أكواد شدات ببجي موبايل (UC) بعملة USDT عبر TRC20 أو ERC20 أو BEP20، للنسخة العالمية من PUBG Mobile. يصلك الكود عبر البريد وتشحنه عبر Midasbuy.',
+    title: 'شدات ببجي (PUBG Mobile UC) — شراء بـ USDT | Boostipay',
+    description: 'اشترِ أكواد شدات ببجي موبايل (UC) بعملة USDT عبر TRC20 أو ERC20 أو BEP20 أو Solana أو TON، للنسخة العالمية من PUBG Mobile. يصلك الكود عبر البريد وتشحنه عبر Midasbuy.',
     h1: 'شدات ببجي موبايل مع الدفع بـ USDT',
     intro: [
       'الشدات أو UC (Unknown Cash) هي العملة داخل لعبة PUBG Mobile، وتُستخدم لشراء Royale Pass والأزياء وأشكال الأسلحة والصناديق.',
-      'يصلك كود شحن UC عبر البريد الإلكتروني، وتضيفه إلى حسابك باستخدام معرّف اللاعب (Player ID). ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20.',
+      'يصلك كود شحن UC عبر البريد الإلكتروني، وتضيفه إلى حسابك باستخدام معرّف اللاعب (Player ID). ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20 أو Solana أو TON.',
     ],
     regionTitle: 'مع أي نسخة من اللعبة تعمل الأكواد؟',
     region: [
@@ -85,8 +85,8 @@ const ar: BrandSet = {
   },
   'razer-gold': {
     name: 'Razer Gold',
-    title: 'أكواد Razer Gold PIN — شراء بـ USDT | Omega Digital',
-    description: 'اشترِ أكواد Razer Gold PIN بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20. اختر الكود المخصّص لمنطقة محفظة Razer Gold لديك. يصلك الكود عبر البريد الإلكتروني.',
+    title: 'أكواد Razer Gold PIN — شراء بـ USDT | Boostipay',
+    description: 'اشترِ أكواد Razer Gold PIN بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20 أو Solana أو TON. اختر الكود المخصّص لمنطقة محفظة Razer Gold لديك. يصلك الكود عبر البريد الإلكتروني.',
     h1: 'أكواد رازر جولد مع الدفع بـ USDT',
     intro: [
       'Razer Gold محفظة مخصّصة للألعاب، تقبلها آلاف الألعاب والمتاجر لشراء الرصيد داخل الألعاب، من ألعاب الجوال إلى ألعاب الحاسوب.',
@@ -112,12 +112,12 @@ const ar: BrandSet = {
   },
   'google-play': {
     name: 'Google Play',
-    title: 'بطاقة جوجل بلاي (Google Play) — شراء بـ USDT | Omega Digital',
-    description: 'اشترِ أكواد بطاقة جوجل بلاي بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20. يجب أن تطابق دولة البطاقة دولة Google Play لديك، ويصلك الكود عبر البريد.',
+    title: 'بطاقة جوجل بلاي (Google Play) — شراء بـ USDT | Boostipay',
+    description: 'اشترِ أكواد بطاقة جوجل بلاي بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20 أو Solana أو TON. يجب أن تطابق دولة البطاقة دولة Google Play لديك، ويصلك الكود عبر البريد.',
     h1: 'بطاقات جوجل بلاي مع الدفع بـ USDT',
     intro: [
       'تضيف بطاقة Google Play رصيدًا إلى حسابك في Google، ويمكنك استخدامه للتطبيقات والمشتريات داخل الألعاب والاشتراكات والكتب والأفلام على Google Play.',
-      'ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20. نرسل الكود إلى بريدك الإلكتروني بعد مراجعة يدوية سريعة.',
+      'ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20 أو Solana أو TON. نرسل الكود إلى بريدك الإلكتروني بعد مراجعة يدوية سريعة.',
     ],
     regionTitle: 'يجب أن تطابق دولة البطاقة دولة Google Play لديك',
     region: [
@@ -139,12 +139,12 @@ const ar: BrandSet = {
   },
   apple: {
     name: 'Apple Gift Card',
-    title: 'بطاقة ايتونز وApple Gift Card — شراء بـ USDT | Omega Digital',
-    description: 'اشترِ بطاقة ايتونز (Apple Gift Card) لـ App Store وiTunes وiCloud+ بـ USDT عبر TRC20 أو ERC20 أو BEP20. يجب أن تطابق دولتها حساب Apple، ويصلك الكود بالبريد.',
+    title: 'بطاقة ايتونز وApple Gift Card — شراء بـ USDT | Boostipay',
+    description: 'اشترِ بطاقة ايتونز (Apple Gift Card) لـ App Store وiTunes وiCloud+ بـ USDT عبر TRC20 أو ERC20 أو BEP20 أو Solana أو TON. يجب أن تطابق دولتها حساب Apple، ويصلك الكود بالبريد.',
     h1: 'بطاقات Apple (ايتونز) مع الدفع بـ USDT',
     intro: [
       'تضيف Apple Gift Card رصيدًا إلى حساب Apple (Apple Account)، ويمكنك استخدامه للتطبيقات والألعاب والمشتريات داخل التطبيقات وApple Music وiCloud+ وغيرها من الاشتراكات.',
-      'ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20. نرسل الكود إلى بريدك الإلكتروني بعد مراجعة يدوية سريعة.',
+      'ادفع بعملة USDT عبر شبكة TRC20 أو ERC20 أو BEP20 أو Solana أو TON. نرسل الكود إلى بريدك الإلكتروني بعد مراجعة يدوية سريعة.',
     ],
     regionTitle: 'يجب أن تطابق دولة البطاقة دولة حساب Apple',
     region: [
