@@ -17,7 +17,7 @@ Storefront for game codes and gift cards, paid with **USDT on TRC20, ERC20 or BE
 
 ## Product images and networks
 
-- Product artwork comes from our partner Coda (Codashop tiles, used with their permission) and is served from `public/products/`. `src/lib/images.ts` picks the image from the product's family and title; products without a match (e.g. Razer Gold) get a brand-gradient tile.
+- Product artwork comes from our partner Coda (Codashop tiles, used with their permission) and is served from `public/products/`. `src/lib/images.ts` picks the image from the product's family and title; Razer Gold is not on Codashop; its tile is cropped from Razer Gold's own share image. Products without a match get a brand-gradient tile.
 - USDT networks: the site only offers `ENABLED_NETWORKS` in `src/lib/shop.ts` (TRC20, ERC20, BEP20). The API can list more (Polygon, Arbitrum, Avalanche, Solana, TON); they stay hidden and are refused at checkout until added there.
 
 ## How buying works

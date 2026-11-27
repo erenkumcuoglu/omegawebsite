@@ -24,6 +24,8 @@ const RULES: [RegExp, string][] = [
   [/\bnintendo\b/i, '/products/nintendo.jpg'],
   [/\b(ea\s*(sports\s*)?fc|fc\s*mobile)\b/i, '/products/ea-fc.png'],
   [/\bspotify\b/i, '/products/spotify.png'],
+  // Not on Codashop: cropped from Razer Gold's own share image (gold.razer.com).
+  [/\brazer\b/i, '/products/razer-gold.jpg'],
 ];
 
 export const productImage = (product: { title: string; family?: string | null }): string | null => {
@@ -31,11 +33,12 @@ export const productImage = (product: { title: string; family?: string | null })
   return RULES.find(([pattern]) => pattern.test(text))?.[1] ?? null;
 };
 
-/** Brand landing pages and brand tiles. Razer Gold has no partner artwork: gradient tile. */
+/** Brand landing pages and brand tiles. */
 const BRAND_IMAGES: Partial<Record<BrandKey, string>> = {
   steam: '/products/steam.jpg',
   playstation: '/products/psn-us.png',
   'pubg-mobile': '/products/pubg-mobile.jpg',
+  'razer-gold': '/products/razer-gold.jpg',
   'google-play': '/products/google-play.png',
   apple: '/products/apple.png',
 };
